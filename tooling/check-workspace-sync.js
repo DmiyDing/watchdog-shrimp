@@ -27,6 +27,10 @@ const workspaceSkillPath = readOption(
   "--workspace-skill-path",
   path.join(os.homedir(), ".openclaw", "workspace", "skills", "watchdog-shrimp")
 );
+const extraSkillPath = readOption(
+  "--extra-skill-path",
+  path.join(os.homedir(), ".openclaw", "skills", "watchdog-shrimp")
+);
 
 const relativeFiles = [
   "SKILL.md",
@@ -49,6 +53,7 @@ function finish(status, code, detail, diffs = []) {
   console.log(`workspace-sync: ${status}`);
   console.log(`repo: ${repoSkillPath}`);
   console.log(`workspace: ${workspaceSkillPath}`);
+  console.log(`extra: ${extraSkillPath}`);
   console.log(`detail: ${detail}`);
   if (diffs.length > 0) {
     console.log("diffs:");
@@ -92,8 +97,27 @@ for (const relativeFile of relativeFiles) {
   }
 }
 
-if (diffs.length === 0) {
-  finish("SYNCED", 0, "workspace skill copy matches the repository skill tree");
+if (fs.existsSync(extraSkillPath)) {
+  for (const relativeFile of relativeFiles) {
+    const repoFile = path.join(repoSkillPath, relativeFile);
+    const extraFile = path.join(extraSkillPath, relativeFile);
+
+    if (!fs.existsSync(extraFile)) {
+      diffs.push(`duplicate copy incomplete: ${relativeFile}`);
+      continue;
+    }
+
+    const repoHash = sha256(readNormalized(repoFile));
+    const extraHash = sha256(readNormalized(extraFile));
+
+    if (repoHash !== extraHash) {
+      diffs.push(`duplicate copy differs: ${relativeFile}`);
+    }
+  }
 }
 
-finish("DRIFT", 2, "workspace skill copy differs from the repository skill tree", diffs);
+if (diffs.length === 0) {
+  finish("SYNCED", 0, "workspace skill copy matches the repository skill tree and no duplicate drift was found");
+}
+
+finish("DRIFT", 2, "workspace skill copy or duplicate install copy differs from the repository skill tree", diffs);

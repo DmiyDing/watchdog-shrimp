@@ -112,6 +112,7 @@
 - `tooling/validate-evals.js`：本地 eval 结构校验脚本
 - `tooling/check-activation.js`：AGENTS 激活漂移检查脚本
 - `tooling/check-workspace-sync.js`：workspace 生效副本漂移检查脚本
+- `RELEASE-CHECKLIST.md`：公开发布与重装检查清单
 
 ## 快速接入
 
@@ -130,6 +131,8 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 ```
 
 然后把这个仓库放到 OpenClaw 兼容的 skills 路径里，或者通过你的本地 skill 工作流注册它。
+建议只保留一个 canonical 生效副本：`~/.openclaw/workspace/skills/watchdog-shrimp`。
+避免同时留一个陈旧的 `~/.openclaw/skills/watchdog-shrimp` 副本。
 
 如有需要，安装后重启客户端。
 如果自动加载不稳定，就显式按名称调用这个 skill。
@@ -287,6 +290,8 @@ clawhub publish watchdog-shrimp --version 0.1.0
 - `npm run validate`
 - `npm run validate:workspace-sync`
 - 确认 `README`、`SKILL`、`agents-snippet.md` 对 `LOW` / `MEDIUM` / `HIGH` 的口径完全一致
+
+完整的公开检查清单见 [`RELEASE-CHECKLIST.md`](./RELEASE-CHECKLIST.md)。
 
 ## Skill 与 Runtime 的边界
 

@@ -112,6 +112,7 @@ If the requirement is guaranteed blocking of dangerous actions, that belongs in 
 - `tooling/validate-evals.js`: local eval structure validator
 - `tooling/check-activation.js`: AGENTS activation drift checker
 - `tooling/check-workspace-sync.js`: workspace skill drift checker
+- `RELEASE-CHECKLIST.md`: public release and reinstall checklist
 
 ## Quick Start
 
@@ -130,6 +131,8 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 ```
 
 Then place this repository in your OpenClaw-compatible skills path, or register it through your local skill workflow.
+Prefer a single canonical active copy under `~/.openclaw/workspace/skills/watchdog-shrimp`.
+Avoid leaving a second stale copy under `~/.openclaw/skills/watchdog-shrimp`.
 
 After installation, restart the client if needed.
 If auto-loading is weak, explicitly invoke the skill by name.
@@ -287,6 +290,8 @@ Suggested release checks before uploading:
 - `npm run validate`
 - `npm run validate:workspace-sync`
 - confirm `README`, `SKILL`, and `agents-snippet.md` still agree on `LOW` / `MEDIUM` / `HIGH`
+
+See [`RELEASE-CHECKLIST.md`](./RELEASE-CHECKLIST.md) for the full public checklist.
 
 ## Skill vs Runtime Boundary
 
