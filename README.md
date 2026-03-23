@@ -18,7 +18,7 @@ It does not try to solve every agent problem.
 It focuses on one operational decision:
 
 - when to execute now
-- when to ask once
+- when to keep medium-risk work moving
 - when to stop hard
 
 ## What You Get
@@ -37,7 +37,7 @@ This repository needs real OpenClaw injection to become active governance.
 ## Core Behavior
 
 - `LOW`: execute directly, verify, then report
-- `MEDIUM`: ask one short confirmation, wait for an explicit reply, then execute
+- `MEDIUM`: execute directly, verify, then report
 - `HIGH`: require explicit second confirmation on intent, scope, impact, consequence, and go/no-go
 
 ## Why It Is OpenClaw-Specific
