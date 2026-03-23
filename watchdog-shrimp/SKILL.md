@@ -37,6 +37,8 @@ Installing or storing this skill is not the same as activating it in OpenClaw.
 Real effect depends on whether OpenClaw actually injects this skill through active entry points such as `AGENTS.md`, standing orders, or runtime policy.
 
 Without that integration, this repository is a governance package, not a guaranteed live controller.
+Activation helpers should print the exact snippet to apply.
+They should not silently edit `AGENTS.md` or claim activation is complete when it is not.
 
 ## Core Policy
 
@@ -224,9 +226,11 @@ For stable real-world effect, pair this skill with always-injected OpenClaw entr
 - runtime approval policy
 
 Without that integration, this skill remains available guidance rather than reliably injected governance.
+Use `references/agents-snippet.md` as the single-source activation snippet when a manual AGENTS injection is needed.
 
 ## References
 
+- [references/agents-snippet.md](references/agents-snippet.md)
 - [references/risk-matrix.md](references/risk-matrix.md)
 - [references/confirmation-templates.md](references/confirmation-templates.md)
 - [references/examples.md](references/examples.md)

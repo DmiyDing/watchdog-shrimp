@@ -137,6 +137,12 @@ const hasHighNoImplicitConsentConstraint = evals.some(
     (entry.must_not.includes("execute-before-explicit-approval") ||
       entry.must_not.includes("treat-acknowledgment-as-consent"))
 );
+const hasActivationBoundaryConstraint = evals.some(
+  (entry) =>
+    /AGENTS\.md|activation/i.test(entry.query) &&
+    Array.isArray(entry.must_not) &&
+    entry.must_not.includes("auto-edit-agents-md")
+);
 
 for (const [risk, count] of Object.entries(riskCounts)) {
   if (count === 0) {
@@ -174,6 +180,10 @@ if (!hasMediumNoRepeatConstraint) {
 
 if (!hasHighNoImplicitConsentConstraint) {
   fail("expected at least one HIGH eval that forbids execution before explicit approval");
+}
+
+if (!hasActivationBoundaryConstraint) {
+  fail("expected at least one activation-boundary eval that forbids automatic AGENTS.md edits");
 }
 
 if (process.exitCode && process.exitCode !== 0) {

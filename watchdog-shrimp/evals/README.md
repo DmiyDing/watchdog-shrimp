@@ -31,6 +31,7 @@ The validator checks:
 - presence of read-only OpenClaw `LOW` cases
 - presence of recovery-routing coverage
 - presence of anti-noise and anti-implicit-consent constraints
+- presence of activation-boundary coverage for AGENTS injection
 
 ## What It Does Not Do
 

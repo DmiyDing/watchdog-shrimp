@@ -107,6 +107,7 @@
 - `watchdog-shrimp/references/checklist.md`：执行检查清单
 - `watchdog-shrimp/evals/evals.json`：评测种子样例
 - `watchdog-shrimp/evals/README.md`：本地评测说明
+- `watchdog-shrimp/references/agents-snippet.md`：单一来源的 AGENTS 激活片段
 - `tooling/validate-evals.js`：本地 eval 结构校验脚本
 - `docs/requirements.md`：原始产品需求
 - `docs/design.md`：设计说明与分层模型
@@ -145,7 +146,9 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 2. 验证仓库里存在 `watchdog-shrimp/SKILL.md`。
 3. 明确告诉我最终安装到了哪个路径。
 4. 不要修改无关文件。
-5. 如果当前环境还需要 `AGENTS.md` 或 standing order 片段才能真正激活，请直接给我准确片段，不要假装已经激活完成。
+5. 不要自动修改 `AGENTS.md`、standing orders 或其他激活文件。
+6. 如果当前环境还需要 `AGENTS.md` 或 standing order 片段才能真正激活，请直接输出 `watchdog-shrimp/references/agents-snippet.md` 的准确内容，并告诉我应粘贴到哪里。
+7. 除非这些激活文件在我明确批准后被手动更新，否则不要宣称“已经激活完成”。
 ```
 
 如果你的 OpenClaw 实例没有安装权限，它应该停在需要你手动执行的命令或目标路径，而不是假装已经装好了。
@@ -161,7 +164,11 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 
 ### 4. 写一段短治理规则
 
-`AGENTS.md` 示例片段：
+请以这里的单一来源片段为准：
+
+- [`watchdog-shrimp/references/agents-snippet.md`](./watchdog-shrimp/references/agents-snippet.md)
+
+当前 `AGENTS.md` 示例：
 
 ```md
 ## Execution Governance
@@ -181,6 +188,7 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 - 读取 `~/.openclaw/openclaw.json` 并总结，不做修改 -> 应保持 `LOW`
 - 修改 3 个普通源码文件 -> 应为 `MEDIUM`
 - 安装 OpenClaw 插件、写入配置、重启 gateway -> 应为 `HIGH`
+- 让 OpenClaw 安装 skill 并只输出激活片段 -> 不应自动改 `AGENTS.md`
 
 ## 协作模型
 

@@ -59,6 +59,12 @@ Approval rule:
 - failed mutation, unstable gateway, or partial destructive state -> recovery workflow first
 - if a named guarded workflow is unavailable, say that directly and stay conservative
 
+## Activation Check
+
+- installing the skill is not the same as activating it
+- if AGENTS or standing-order injection is still needed, output the exact snippet and target path
+- do not auto-edit `AGENTS.md` unless the user explicitly requested that exact mutation
+
 ## Preference Check
 
 - if the user has approved similar medium-risk actions repeatedly, reduce wording, not the confirmation requirement
