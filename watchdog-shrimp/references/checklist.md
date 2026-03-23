@@ -28,11 +28,11 @@ Use one short confirmation if any are true:
 - restart isolated development service
 
 Execution rule:
-- ask once
-- wait for explicit reply
-- then execute
-- do not ask again unless scope changes materially
-- do not expand into a long safety speech
+- do not ask for confirmation
+- do not add permission preamble
+- execute directly
+- verify result
+- report clearly
 
 ## HIGH Check
 

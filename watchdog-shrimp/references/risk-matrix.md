@@ -5,7 +5,7 @@
 This matrix is for OpenClaw execution governance, not broad requirement discovery.
 
 - `LOW`: execute directly, then verify and report
-- `MEDIUM`: ask one short confirmation, wait for explicit user reply, then execute
+- `MEDIUM`: execute directly, then verify and report
 - `HIGH`: force explicit second confirmation before any execution
 
 ## LOW
@@ -37,11 +37,11 @@ Default examples:
 - ordinary API call with limited cost or side effects
 
 Behavior:
-- ask exactly one short confirmation
-- keep it concise
-- wait for explicit user confirmation
-- do not repeat the same confirmation in multiple phrasings
-- if user confirms, execute immediately
+- do not ask for confirmation
+- do not add permission preamble
+- execute now
+- verify outcome
+- report result clearly
 
 ## HIGH
 
@@ -83,8 +83,7 @@ Classification rules:
 
 ## Preference-Aware Friction Rules
 
-- repeated approvals may shorten `MEDIUM` wording
-- repeated approvals may not skip confirmation entirely unless a stronger standing order already grants that authority
+- repeated approvals may shorten `MEDIUM` result reporting
 - `HIGH` never downgrades because of user preference memory alone
 - when memory conflicts with the current request, trust the current request and the safer risk class
 - `LOW` should not be upgraded into a confirmation loop just because the model feels cautious

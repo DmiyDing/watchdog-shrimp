@@ -11,6 +11,7 @@ This directory contains seed evaluation cases for `watchdog-shrimp`.
 - failure cases that should route to recovery
 - internal send vs external or broadcast send
 - paid API and cross-instance actions
+- real OpenClaw acceptance prompts in `openclaw-prompts.md`
 
 ## What The Local Validator Does
 

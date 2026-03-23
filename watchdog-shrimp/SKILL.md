@@ -1,6 +1,6 @@
 ---
 name: watchdog-shrimp
-description: "This skill should be used for OpenClaw execution tasks where the main problem is governance, not implementation detail: too many confirmations for low-risk work, too little caution for OpenClaw-specific high-risk work, or unclear boundaries between execute-now and confirm-first. It is intended for OpenClaw runs that need risk triage, one short confirmation for medium risk, and hard confirmation gates for destructive, external, costly, privileged, gateway-affecting, or production-impacting actions. It should not be used for purely informational requests or for deep requirement-discovery work where clarify-first is the better fit."
+description: "This skill should be used for OpenClaw execution tasks where the main problem is governance, not implementation detail: too many confirmations for high-risk work, too little caution for OpenClaw-specific dangerous actions, or unclear boundaries between execute-now and hard-stop. It is intended for OpenClaw runs that need low- and medium-risk work to execute directly with verification, while destructive, external, costly, privileged, gateway-affecting, or production-impacting actions still require explicit confirmation. It should not be used for purely informational requests or for deep requirement-discovery work where clarify-first is the better fit."
 license: Apache-2.0
 metadata:
   author: DmiyDing
@@ -25,7 +25,7 @@ It is not a generic coding advisor, not a requirement-discovery framework, and n
 This skill can improve behavior strongly at the prompt and skill layer:
 - classify risk more consistently
 - reduce low-risk friction
-- make medium-risk confirmation compact and explicit
+- keep medium-risk work moving without unnecessary interruption
 - make dangerous actions stop visibly before execution
 
 This skill cannot guarantee non-bypassable enforcement by itself.
@@ -43,7 +43,7 @@ They should not silently edit `AGENTS.md` or claim activation is complete when i
 ## Core Policy
 
 - `LOW`: execute directly, verify the result, then report
-- `MEDIUM`: ask one short confirmation, wait for an explicit reply, then execute
+- `MEDIUM`: execute directly, verify the result, then report
 - `HIGH`: require explicit second confirmation on intent, scope, impact, and go/no-go before any execution
 
 ## When To Use
@@ -87,12 +87,12 @@ Classify the action as `LOW`, `MEDIUM`, or `HIGH` using `references/risk-matrix.
 
 Default OpenClaw posture:
 - low-risk work should not ask again
-- medium-risk work should ask once, briefly
+- medium-risk work should normally execute without confirmation
 - high-risk work should always stop for a second confirmation
 
 Preference adaptation:
-- if the operator has approved the same medium-risk action pattern repeatedly, reduce verbosity, not safety
-- repeated approval may shorten the wording for `MEDIUM`
+- if the operator has approved the same medium-risk action pattern repeatedly, reduce reporting verbosity, not safety
+- repeated approval may shorten the wording of `MEDIUM` result reporting
 - repeated approval must never downgrade `HIGH` to `MEDIUM`
 - if memory is uncertain, fall back to the safer current-session classification
 
@@ -100,7 +100,7 @@ Preference adaptation:
 
 Map risk to behavior:
 - `LOW` -> execute -> verify -> report
-- `MEDIUM` -> ask once -> wait for explicit reply -> execute -> verify -> report
+- `MEDIUM` -> execute -> verify -> report
 - `HIGH` -> confirm intent + scope + impact + continue? -> wait
 
 ### 4. Recovery Layer
@@ -133,12 +133,11 @@ Execute, verify, and then report the result.
 
 ### MEDIUM
 
-Ask one short confirmation only.
-Do not produce long safety speeches.
-Do not execute until the user gives an explicit reply.
-Do not repeat the same confirmation in different wording.
-Do not turn one confirmation into a mini protocol dump.
-If the user has a stable approval history for the same action class, shorten the wording but still wait.
+Do not ask for confirmation.
+Do not add permission speech or risk preamble.
+Execute now.
+Verify the outcome.
+Report clearly after execution.
 
 ### HIGH
 
@@ -157,11 +156,8 @@ Do not treat vague replies such as "maybe", "I guess so", or unrelated acknowled
 Use compact confirmations only.
 See `references/confirmation-templates.md`.
 
-The default medium-risk confirmation should feel like this:
-- one sentence about what will happen
-- one sentence asking whether to continue
-- no default-continue phrasing
-- no repeated confirmation block after the same scope was already stated
+Medium risk should not use a confirmation template.
+It should execute first and report afterward.
 
 The default high-risk confirmation should feel like this:
 - what action is about to happen
@@ -215,7 +211,7 @@ Do not invent companion skills or pretend an unavailable workflow already exists
 - Chinese prompt -> Chinese headings
 - English prompt -> English headings
 - prefer short blocks and flat lists
-- for medium risk, keep the confirmation compact and explicit
+- for medium risk, do not ask for permission
 - for high risk, include action, scope, consequence, and continue/cancel
 
 ## Integration Guidance

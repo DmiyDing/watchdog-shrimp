@@ -11,23 +11,12 @@ Pattern:
 
 ## MEDIUM
 
-Keep it to one short confirmation.
-Do not dump a full protocol.
-Do not imply default continuation.
+No confirmation.
 
-### Chinese
-
-```markdown
-**[风险: 中]** 这一步会修改 `X` 并影响 `Y`。
-**请确认**：是否按这个范围继续？
-```
-
-### English
-
-```markdown
-**[Risk: Medium]** This will change `X` and affect `Y`.
-**Next Step**: Confirm whether I should continue with that scope.
-```
+Pattern:
+- Execute
+- Verify
+- Report
 
 ## HIGH
 
@@ -58,14 +47,13 @@ State the possible consequence explicitly.
 
 - if the action touches `~/.openclaw/openclaw.json`, plugins, gateway, delivery, or shared routing, say that directly
 - if the action is only a read or recommendation, do not ask for confirmation just because the surface is sensitive
-- if a medium-risk action is repeatedly approved, shorten wording but still wait for a reply
-- do not repeat the same confirmation twice for the same scope
+- if a medium-risk action is repeatedly approved, shorten result reporting when useful
 - do not treat vague enthusiasm or unrelated acknowledgment as approval for a high-risk action
 
 ## Tone Rules
 
 - low risk: no permission speech
-- medium risk: one short confirmation only
+- medium risk: no permission speech
 - high risk: concise but explicit
 - no filler, no duplicate confirmation blocks
 - never mix Chinese and English headings in the same reply

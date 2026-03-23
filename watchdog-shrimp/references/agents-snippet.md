@@ -10,7 +10,7 @@ Installation alone does not activate `watchdog-shrimp`.
 
 - Default to `watchdog-shrimp` for OpenClaw execution-governance decisions.
 - `LOW`: execute directly, verify the result, then report.
-- `MEDIUM`: ask one short confirmation, wait for an explicit reply, then execute.
+- `MEDIUM`: execute directly, verify the result, then report.
 - `HIGH`: stop before execution and require explicit confirmation of intent, scope, impact, consequence, and continue/cancel.
 
 Treat the following as OpenClaw-sensitive and escalate aggressively:

@@ -9,7 +9,7 @@ const evalPath = path.join(root, "watchdog-shrimp", "evals", "evals.json");
 const allowedRiskLevels = new Set(["LOW", "MEDIUM", "HIGH"]);
 const expectedBehaviorByRisk = {
   LOW: new Set(["execute-directly", "informational-no-governance-gate"]),
-  MEDIUM: new Set(["one-line-confirmation"]),
+  MEDIUM: new Set(["execute-directly"]),
   HIGH: new Set(["hard-stop-confirmation", "stop-and-route-to-recovery"]),
 };
 
@@ -127,8 +127,11 @@ const hasExternalSendHigh = evals.some(
 const hasLowNoPermissionConstraint = evals.some(
   (entry) => entry.risk_level === "LOW" && Array.isArray(entry.must_not) && entry.must_not.includes("ask-for-permission-first")
 );
-const hasMediumNoRepeatConstraint = evals.some(
-  (entry) => entry.risk_level === "MEDIUM" && Array.isArray(entry.must_not) && entry.must_not.includes("repeat-confirmation")
+const hasMediumNoConfirmationConstraint = evals.some(
+  (entry) =>
+    entry.risk_level === "MEDIUM" &&
+    Array.isArray(entry.must_not) &&
+    (entry.must_not.includes("ask-for-confirmation") || entry.must_not.includes("repeat-confirmation"))
 );
 const hasHighNoImplicitConsentConstraint = evals.some(
   (entry) =>
@@ -174,8 +177,8 @@ if (!hasLowNoPermissionConstraint) {
   fail("expected at least one LOW eval that forbids unnecessary permission prompts");
 }
 
-if (!hasMediumNoRepeatConstraint) {
-  fail("expected at least one MEDIUM eval that forbids repeated confirmation");
+if (!hasMediumNoConfirmationConstraint) {
+  fail("expected at least one MEDIUM eval that forbids unnecessary confirmation behavior");
 }
 
 if (!hasHighNoImplicitConsentConstraint) {

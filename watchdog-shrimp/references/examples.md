@@ -23,9 +23,10 @@ Expected behavior:
 
 Expected behavior:
 - one short confirmation
-- wait for explicit reply
-- then execute
-- no repeated confirmation for the same scope
+- execute immediately
+- verify result
+- report clearly
+- no confirmation loop
 
 ## Should Trigger As HIGH
 

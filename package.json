@@ -4,7 +4,9 @@
   "description": "OpenClaw-focused execution governance skill project.",
   "license": "Apache-2.0",
   "scripts": {
-    "validate:evals": "node tooling/validate-evals.js"
+    "validate": "npm run validate:evals && npm run validate:activation",
+    "validate:evals": "node tooling/validate-evals.js",
+    "validate:activation": "node tooling/check-activation.js --warn-only"
   },
   "files": [
     "watchdog-shrimp",
