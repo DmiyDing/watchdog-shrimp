@@ -1,7 +1,6 @@
 {
-  "name": "watchdog-shrimp-skills",
+  "name": "watchdog-shrimp",
   "version": "0.1.0",
-  "private": true,
   "description": "OpenClaw-focused execution governance skill project.",
   "license": "Apache-2.0",
   "files": [
