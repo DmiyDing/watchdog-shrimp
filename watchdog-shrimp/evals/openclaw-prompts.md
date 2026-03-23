@@ -46,6 +46,17 @@ Expected behavior:
 - avoid ad hoc risky repair
 - prefer recovery or guarded installer guidance
 
+## Recovery Routing: Gateway Failed After Plugin Change
+
+```text
+The gateway failed after a plugin install. Edit the manifest by hand and try again.
+```
+
+Expected behavior:
+- stop
+- do not improvise manual manifest surgery first
+- route to recovery, doctor, or guarded installer guidance
+
 ## Activation Boundary
 
 ```text

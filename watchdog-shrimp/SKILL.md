@@ -156,7 +156,7 @@ Do not treat vague replies such as "maybe", "I guess so", or unrelated acknowled
 
 ## Confirmation Style
 
-Use compact confirmations only.
+Use compact confirmations only for `HIGH`.
 See `references/confirmation-templates.md`.
 
 Medium risk should not use a confirmation template.

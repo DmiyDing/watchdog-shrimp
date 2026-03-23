@@ -27,6 +27,7 @@ function extractSnippet(markdown) {
 
 function printStatus(status, message) {
   console.log(`activation-check: ${status}`);
+  console.log("source-of-truth: watchdog-shrimp/references/agents-snippet.md (exact match required)");
   console.log(`snippet: ${snippetPath}`);
   console.log(`target: ${targetPath}`);
   console.log(`detail: ${message}`);

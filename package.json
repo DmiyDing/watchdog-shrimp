@@ -6,7 +6,8 @@
   "scripts": {
     "validate": "npm run validate:evals && npm run validate:activation",
     "validate:evals": "node tooling/validate-evals.js",
-    "validate:activation": "node tooling/check-activation.js --warn-only"
+    "validate:activation": "node tooling/check-activation.js --warn-only",
+    "validate:workspace-sync": "node tooling/check-workspace-sync.js --warn-only"
   },
   "files": [
     "watchdog-shrimp",

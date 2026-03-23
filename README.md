@@ -83,9 +83,9 @@ To affect actual OpenClaw execution, it must be injected through a real entry po
 ## What This Skill Does Well
 
 - risk classification into `LOW`, `MEDIUM`, and `HIGH`
-- compact confirmation instead of protocol-heavy warning text
+- low- and medium-risk execution without unnecessary permission friction
 - OpenClaw-specific escalation rules
-- preference-aware friction reduction for repeated `MEDIUM` approvals
+- preference-aware reduction of result verbosity for repeated `MEDIUM` patterns
 - routing risky work toward clarification, protection, installer, or recovery workflows
 
 ## What This Skill Does Not Do
@@ -102,7 +102,7 @@ If the requirement is guaranteed blocking of dangerous actions, that belongs in 
 
 - `watchdog-shrimp/SKILL.md`: main skill contract
 - `watchdog-shrimp/references/risk-matrix.md`: OpenClaw-oriented risk rules
-- `watchdog-shrimp/references/confirmation-templates.md`: compact confirmation patterns
+- `watchdog-shrimp/references/confirmation-templates.md`: high-risk confirmation patterns
 - `watchdog-shrimp/references/examples.md`: example triggers and boundaries
 - `watchdog-shrimp/references/checklist.md`: execution checklist
 - `watchdog-shrimp/evals/evals.json`: seed eval cases
@@ -174,22 +174,12 @@ For stable behavior, pair it with a persistent entry point such as:
 
 ### 4. Add a short governance rule
 
-Use the exact single-source snippet from:
+Activation snippet source of truth:
 
 - [`watchdog-shrimp/references/agents-snippet.md`](./watchdog-shrimp/references/agents-snippet.md)
 
-Current `AGENTS.md` example:
-
-```md
-## Execution Governance
-
-- Default to `watchdog-shrimp` for OpenClaw execution decisions.
-- `LOW`: execute, verify, report.
-- `MEDIUM`: execute directly, verify, report.
-- `HIGH`: require explicit second confirmation before execution.
-- Treat `~/.openclaw/openclaw.json`, `plugins.entries`, gateway changes, delivery/router changes, external sends, paid APIs, and cross-instance actions as OpenClaw-sensitive.
-- Use `clarify-first` for ambiguity-heavy requests.
-```
+Paste that exact snippet into your actual always-injected OpenClaw entry point.
+Do not maintain a second handwritten shortcut version in `README` or `AGENTS.md`.
 
 ### 5. Verify the posture in real prompts
 
@@ -257,6 +247,12 @@ Check activation drift with:
 node tooling/check-activation.js
 ```
 
+Check whether the active workspace copy has drifted from this repository:
+
+```bash
+npm run validate:workspace-sync
+```
+
 This repository currently ships seed eval cases for:
 
 - read-only inspection that should remain `LOW`
@@ -269,6 +265,7 @@ This repository currently ships seed eval cases for:
 
 The local validator checks structure and coverage sanity for those eval seeds.
 The activation checker reports `ACTIVE`, `DRIFT`, or `NOT ACTIVE` against the real AGENTS target.
+The workspace sync checker reports `SYNCED` or `DRIFT` against the active workspace skill copy.
 This is still not a live model-scoring harness.
 
 The eval set is still seed data, not a full executable runner.
@@ -293,6 +290,13 @@ Use [`docs/clawhub-publish.md`](./docs/clawhub-publish.md) as the release checkl
 
 ## Skill vs Runtime Boundary
 
+## Recommended Companion Skills
+
+- [`clarify-first`](https://github.com/DmiyDing/clarify-first)
+- `openclaw-fault-recovery`
+- `memory-and-preferences-recall`
+- `exec-allowlist-troubleshooting`
+
 ### Skill layer can do
 
 - improve classification quality
@@ -306,6 +310,13 @@ Use [`docs/clawhub-publish.md`](./docs/clawhub-publish.md) as the release checkl
 - bind risk classes to approval mechanisms
 - guarantee approval on external outbound sends
 - guarantee approval on privileged, destructive, or cost-sensitive actions
+
+## Very Short Promise
+
+- `LOW` and `MEDIUM` move.
+- `HIGH` stops.
+- Installation is not activation.
+- OpenClaw-specific risk is treated more aggressively than generic developer work.
 
 ## Current Status
 

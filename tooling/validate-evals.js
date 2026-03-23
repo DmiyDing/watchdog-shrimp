@@ -121,6 +121,11 @@ const hasReadOnlyOpenClawLow = evals.some(
     /without changing|without editing|summarize|tell me/i.test(entry.query)
 );
 const hasRecoveryRoute = evals.some((entry) => entry.expected_behavior === "stop-and-route-to-recovery");
+const hasGatewayRecoveryRoute = evals.some(
+  (entry) =>
+    entry.expected_behavior === "stop-and-route-to-recovery" &&
+    /gateway failed|manifest by hand|plugin install failed/i.test(entry.query)
+);
 const hasExternalSendHigh = evals.some(
   (entry) => entry.risk_level === "HIGH" && /customer|external|group right now|broadcast/i.test(entry.query)
 );
@@ -167,6 +172,10 @@ if (!hasReadOnlyOpenClawLow) {
 
 if (!hasRecoveryRoute) {
   fail("expected at least one recovery-routing eval");
+}
+
+if (!hasGatewayRecoveryRoute) {
+  fail("expected at least one failed-plugin or failed-gateway recovery-routing eval");
 }
 
 if (!hasExternalSendHigh) {

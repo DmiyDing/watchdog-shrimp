@@ -68,7 +68,7 @@ Approval rule:
 
 ## Preference Check
 
-- if the user has approved similar medium-risk actions repeatedly, reduce wording, not the confirmation requirement
+- if the user has approved similar medium-risk actions repeatedly, reduce result verbosity rather than reintroducing permission friction
 - do not let preference memory downgrade `HIGH`
 - if memory is stale or uncertain, use the safer present-time classification
 

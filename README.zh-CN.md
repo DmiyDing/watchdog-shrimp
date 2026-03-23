@@ -83,9 +83,9 @@
 ## 这个 Skill 擅长什么
 
 - 把执行风险分成 `LOW`、`MEDIUM`、`HIGH`
-- 用紧凑确认替代协议式长篇警告
+- 让低风险和中风险任务避免不必要的 permission friction
 - 提供 OpenClaw 专属升级规则
-- 对重复批准的 `MEDIUM` 场景降低打扰，但不降安全
+- 对重复出现的 `MEDIUM` 模式减少结果汇报冗余，但不重新引入确认摩擦
 - 把高风险动作导向澄清、保护、安装、恢复等正确流程
 
 ## 这个 Skill 不负责什么
@@ -102,7 +102,7 @@
 
 - `watchdog-shrimp/SKILL.md`：主 skill 契约
 - `watchdog-shrimp/references/risk-matrix.md`：面向 OpenClaw 的风险规则
-- `watchdog-shrimp/references/confirmation-templates.md`：紧凑确认模板
+- `watchdog-shrimp/references/confirmation-templates.md`：高风险确认模板
 - `watchdog-shrimp/references/examples.md`：示例与边界
 - `watchdog-shrimp/references/checklist.md`：执行检查清单
 - `watchdog-shrimp/evals/evals.json`：评测种子样例
@@ -174,22 +174,12 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 
 ### 4. 写一段短治理规则
 
-请以这里的单一来源片段为准：
+激活片段唯一来源：
 
 - [`watchdog-shrimp/references/agents-snippet.md`](./watchdog-shrimp/references/agents-snippet.md)
 
-当前 `AGENTS.md` 示例：
-
-```md
-## Execution Governance
-
-- Default to `watchdog-shrimp` for OpenClaw execution decisions.
-- `LOW`: execute, verify, report.
-- `MEDIUM`: execute directly, verify, report.
-- `HIGH`: require explicit second confirmation before execution.
-- Treat `~/.openclaw/openclaw.json`, `plugins.entries`, gateway changes, delivery/router changes, external sends, paid APIs, and cross-instance actions as OpenClaw-sensitive.
-- Use `clarify-first` for ambiguity-heavy requests.
-```
+把这份准确片段粘贴到你真实使用的 always-injected OpenClaw 入口里。
+不要在 `README` 或 `AGENTS.md` 中再手写第二份“速查版”。
 
 ### 5. 用真实 prompt 做烟雾测试
 
@@ -257,6 +247,12 @@ npm run validate:evals
 node tooling/check-activation.js
 ```
 
+检查当前 workspace 生效副本是否与仓库内容漂移：
+
+```bash
+npm run validate:workspace-sync
+```
+
 当前仓库提供的评测种子已覆盖：
 
 - 应保持 `LOW` 的只读检查
@@ -269,6 +265,7 @@ node tooling/check-activation.js
 
 本地校验脚本会检查这些 eval 种子的结构正确性和覆盖面完整性。
 激活检查脚本会对真实 AGENTS 目标输出 `ACTIVE`、`DRIFT` 或 `NOT ACTIVE`。
+workspace 副本检查脚本会对生效 skill 副本输出 `SYNCED` 或 `DRIFT`。
 它们仍然不是实时模型打分 harness。
 
 这些评测目前仍是种子数据，不是完整可执行 runner。
@@ -293,6 +290,13 @@ clawhub publish watchdog-shrimp --version 0.1.0
 
 ## Skill 与 Runtime 的边界
 
+## 推荐搭配的 Companion Skills
+
+- [`clarify-first`](https://github.com/DmiyDing/clarify-first)
+- `openclaw-fault-recovery`
+- `memory-and-preferences-recall`
+- `exec-allowlist-troubleshooting`
+
 ### Skill 层现在能做的
 
 - 提高风险分类质量
@@ -306,6 +310,13 @@ clawhub publish watchdog-shrimp --version 0.1.0
 - 把风险等级绑定到审批机制
 - 保证外部发送必须审批
 - 保证提权、破坏性、成本敏感动作必须审批
+
+## Very Short Promise
+
+- `LOW` 和 `MEDIUM` 继续推进。
+- `HIGH` 硬停。
+- 安装不等于激活。
+- OpenClaw 专属风险比普通开发任务更激进地升级。
 
 ## 当前状态
 
