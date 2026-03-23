@@ -114,6 +114,7 @@ If the requirement is guaranteed blocking of dangerous actions, that belongs in 
 - `docs/requirements.md`: original product requirements
 - `docs/design.md`: design notes and layer model
 - `docs/mvp-roadmap.md`: MVP and runtime follow-up roadmap
+- `docs/clawhub-publish.md`: ClawHub upload notes and checklist
 
 ## Quick Start
 
@@ -268,6 +269,23 @@ This is still not a live model-scoring harness.
 
 The eval set is still seed data, not a full executable runner.
 That is an honest current limitation, not a hidden one.
+
+## ClawHub Upload
+
+ClawHub's current public docs indicate:
+
+- the publish surface is the skill folder
+- `SKILL.md` frontmatter is used as skill metadata
+- publish requires an explicit semver version
+
+Suggested flow:
+
+```bash
+npm run validate
+clawhub publish watchdog-shrimp --version 0.1.0
+```
+
+Use [`docs/clawhub-publish.md`](./docs/clawhub-publish.md) as the release checklist before uploading.
 
 ## Skill vs Runtime Boundary
 

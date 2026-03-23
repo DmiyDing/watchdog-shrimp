@@ -114,6 +114,7 @@
 - `docs/requirements.md`：原始产品需求
 - `docs/design.md`：设计说明与分层模型
 - `docs/mvp-roadmap.md`：MVP 与 runtime 后续路线图
+- `docs/clawhub-publish.md`：ClawHub 上传说明与检查清单
 
 ## 快速接入
 
@@ -268,6 +269,23 @@ node tooling/check-activation.js
 
 这些评测目前仍是种子数据，不是完整可执行 runner。
 这是当前真实边界，不是隐藏问题。
+
+## ClawHub 上传
+
+根据当前公开的 ClawHub 文档：
+
+- 真正的发布面是 skill 文件夹
+- `SKILL.md` frontmatter 会被当作技能元数据
+- 发布时需要显式 semver 版本号
+
+建议流程：
+
+```bash
+npm run validate
+clawhub publish watchdog-shrimp --version 0.1.0
+```
+
+正式上传前，请按 [`docs/clawhub-publish.md`](./docs/clawhub-publish.md) 做一遍发布检查。
 
 ## Skill 与 Runtime 的边界
 

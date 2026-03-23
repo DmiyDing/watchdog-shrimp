@@ -1,10 +1,12 @@
 ---
 name: watchdog-shrimp
 description: "This skill should be used for OpenClaw execution tasks where the main problem is governance, not implementation detail: too many confirmations for high-risk work, too little caution for OpenClaw-specific dangerous actions, or unclear boundaries between execute-now and hard-stop. It is intended for OpenClaw runs that need low- and medium-risk work to execute directly with verification, while destructive, external, costly, privileged, gateway-affecting, or production-impacting actions still require explicit confirmation. It should not be used for purely informational requests or for deep requirement-discovery work where clarify-first is the better fit."
-license: Apache-2.0
+version: 0.1.0
 metadata:
   author: DmiyDing
   execution_precedence: TERMINAL_GUARDRAIL
+  openclaw:
+    homepage: https://github.com/DmiyDing/watchdog-shrimp
 ---
 
 # watchdog-shrimp
