@@ -116,9 +116,41 @@
 
 ### 1. 安装 skill
 
-把这个仓库放到你的 OpenClaw 兼容 skills 路径里，或通过你当前使用的技能工作流安装它。
+如果你的客户端支持基于仓库的 skill 安装，可以直接执行：
 
-### 2. 确保它能稳定注入
+```bash
+npx -y skills add DmiyDing/watchdog-shrimp
+```
+
+如果你的 OpenClaw 环境更偏向本地路径：
+
+```bash
+git clone git@github.com:DmiyDing/watchdog-shrimp.git
+```
+
+然后把这个仓库放到 OpenClaw 兼容的 skills 路径里，或者通过你的本地 skill 工作流注册它。
+
+如有需要，安装后重启客户端。
+如果自动加载不稳定，就显式按名称调用这个 skill。
+
+### 2. 让 OpenClaw 帮你安装
+
+如果你的 OpenClaw 实例可以访问 GitHub，并且有权限管理本地 skills，可以把下面这段提示词直接发给你自己的 OpenClaw：
+
+```text
+请从 `DmiyDing/watchdog-shrimp` 安装 `watchdog-shrimp` skill。
+
+目标：
+1. 把这个 skill 安装或克隆到当前 OpenClaw 使用的本地 skills 路径中。
+2. 验证仓库里存在 `watchdog-shrimp/SKILL.md`。
+3. 明确告诉我最终安装到了哪个路径。
+4. 不要修改无关文件。
+5. 如果当前环境还需要 `AGENTS.md` 或 standing order 片段才能真正激活，请直接给我准确片段，不要假装已经激活完成。
+```
+
+如果你的 OpenClaw 实例没有安装权限，它应该停在需要你手动执行的命令或目标路径，而不是假装已经装好了。
+
+### 3. 确保它能稳定注入
 
 不要把它只是“装上就放着”。
 如果希望它稳定影响行为，必须配合持久入口，例如：
@@ -127,7 +159,7 @@
 - standing orders
 - runtime approval policy
 
-### 3. 写一段短治理规则
+### 4. 写一段短治理规则
 
 `AGENTS.md` 示例片段：
 
@@ -142,7 +174,7 @@
 - Use `clarify-first` for ambiguity-heavy requests.
 ```
 
-### 4. 用真实 prompt 做烟雾测试
+### 5. 用真实 prompt 做烟雾测试
 
 建议先测这几类：
 

@@ -116,9 +116,41 @@ If the requirement is guaranteed blocking of dangerous actions, that belongs in 
 
 ### 1. Install the skill
 
-Place this repository in your OpenClaw-compatible skills path, or install it through your preferred skill workflow.
+If your client supports repo-based skill installation:
 
-### 2. Make it reliably injectable
+```bash
+npx -y skills add DmiyDing/watchdog-shrimp
+```
+
+If your OpenClaw environment prefers local paths:
+
+```bash
+git clone git@github.com:DmiyDing/watchdog-shrimp.git
+```
+
+Then place this repository in your OpenClaw-compatible skills path, or register it through your local skill workflow.
+
+After installation, restart the client if needed.
+If auto-loading is weak, explicitly invoke the skill by name.
+
+### 2. Ask OpenClaw to install it for you
+
+If your OpenClaw instance can access GitHub and has permission to manage local skills, you can paste this prompt to your own OpenClaw:
+
+```text
+Install the `watchdog-shrimp` skill from `DmiyDing/watchdog-shrimp`.
+
+Goals:
+1. Install or clone the skill into the local skills path you use for OpenClaw.
+2. Verify that the repository contains `watchdog-shrimp/SKILL.md`.
+3. Tell me exactly where it was installed.
+4. Do not edit unrelated files.
+5. If my environment requires an `AGENTS.md` or standing-order snippet for activation, show me the exact snippet instead of pretending activation is already complete.
+```
+
+If your OpenClaw instance does not have installation permissions, it should stop at the exact command or file path you need to run manually.
+
+### 3. Make it reliably injectable
 
 Do not leave this skill as a passive reference only.
 For stable behavior, pair it with a persistent entry point such as:
@@ -127,7 +159,7 @@ For stable behavior, pair it with a persistent entry point such as:
 - standing orders
 - runtime approval policy
 
-### 3. Add a short governance rule
+### 4. Add a short governance rule
 
 Example `AGENTS.md` snippet:
 
@@ -142,7 +174,7 @@ Example `AGENTS.md` snippet:
 - Use `clarify-first` for ambiguity-heavy requests.
 ```
 
-### 4. Verify the posture in real prompts
+### 5. Verify the posture in real prompts
 
 Good smoke tests:
 
