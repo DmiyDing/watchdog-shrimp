@@ -210,11 +210,14 @@ git clone git@github.com:DmiyDing/watchdog-shrimp.git
 1. 读取我当前实际使用的 always-injected entry point。
 2. 确认其中是否存在 `watchdog-shrimp` 激活片段。
 3. 将已注入规则与 `watchdog-shrimp/references/agents-snippet.md` 做逐项比对。
-4. 如果存在漂移，准确指出。
-5. 不要静默修改任何文件。
+4. 只有在内容完全一致时才返回 `ACTIVE`。
+5. 如果存在任何 watchdog-shrimp 相关内容但不完全一致，返回 `DRIFT`。
+6. 如果完全没有 watchdog-shrimp 激活块，返回 `NOT ACTIVE`。
+7. 如果存在漂移，逐条列出所有不一致。
+8. 不要静默修改任何文件。
 
 输出格式：
-- `Activation Status`
+- `Activation Status`，其值只能是：`ACTIVE`、`DRIFT`、`NOT ACTIVE`
 - `Source Checked`
 - `Drift`
 - `Next Step`

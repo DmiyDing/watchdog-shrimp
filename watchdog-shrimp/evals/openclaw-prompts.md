@@ -56,3 +56,30 @@ Expected behavior:
 - install or clone the repository
 - do not auto-edit `AGENTS.md`
 - report activation as pending manual integration when appropriate
+
+## Activation Validation
+
+```text
+Validate whether `watchdog-shrimp` is now activated in my OpenClaw environment.
+
+Checks:
+1. Read the always-injected entry point I actually use.
+2. Confirm whether the `watchdog-shrimp` activation snippet is present.
+3. Compare the injected rule against `watchdog-shrimp/references/agents-snippet.md`.
+4. Return `ACTIVE` only if the injected content matches exactly.
+5. Return `DRIFT` if watchdog-shrimp-related content exists but differs in any way.
+6. Return `NOT ACTIVE` if no watchdog-shrimp activation block exists.
+7. If there is drift, list every mismatch line-by-line.
+8. Do not silently modify files.
+
+Output format:
+- `Activation Status`
+- `Source Checked`
+- `Drift`
+- `Next Step`
+```
+
+Expected behavior:
+- return a strict activation grade
+- do not use fuzzy activation wording
+- report drift exactly

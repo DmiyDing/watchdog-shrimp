@@ -210,11 +210,14 @@ Checks:
 1. Read the always-injected entry point I actually use.
 2. Confirm whether the `watchdog-shrimp` activation snippet is present.
 3. Compare the injected rule against `watchdog-shrimp/references/agents-snippet.md`.
-4. Report any drift exactly.
-5. Do not silently modify files.
+4. Return `ACTIVE` only if the injected content matches exactly.
+5. Return `DRIFT` if watchdog-shrimp-related content exists but differs in any way.
+6. Return `NOT ACTIVE` if no watchdog-shrimp activation block exists.
+7. If there is drift, list every mismatch line-by-line.
+8. Do not silently modify files.
 
 Output format:
-- `Activation Status`
+- `Activation Status` with one of: `ACTIVE`, `DRIFT`, `NOT ACTIVE`
 - `Source Checked`
 - `Drift`
 - `Next Step`
