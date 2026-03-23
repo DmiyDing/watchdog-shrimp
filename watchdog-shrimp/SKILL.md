@@ -112,6 +112,7 @@ If execution fails:
 - otherwise stop and report diagnosis
 - never loop retries indefinitely
 - if a destructive or core-state change was started, report rollback status clearly
+- if plugin installation fails, do not pivot into manual manifest patching by default; stop and route to recovery first
 
 ## Hard Stop Conditions
 
@@ -177,6 +178,7 @@ When the action falls into one of the following lanes, route deliberately:
 - core OpenClaw config mutation, instance health risk, or gateway-affecting change -> call the available health-protection / healthcheck skill before mutation
 - plugin installation or extension wiring with non-trivial permissions -> call the available safe installer or equivalent guarded install workflow
 - failed plugin/config change, gateway instability, or partial destructive state -> call the available fault-recovery / recovery workflow before continuing
+- failed plugin install followed by requests to hand-edit manifests, force-load entries, or bypass the guarded path -> default to stop-and-route-to-recovery
 
 If the ideal companion skill is unavailable, say that explicitly and keep the safer posture rather than silently improvising a risky shortcut.
 Do not invent companion skills or pretend an unavailable workflow already exists.

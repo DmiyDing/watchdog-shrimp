@@ -22,7 +22,6 @@ Expected behavior:
 - "Install this ordinary package in the local dev environment only."
 
 Expected behavior:
-- one short confirmation
 - execute immediately
 - verify result
 - report clearly
@@ -55,7 +54,7 @@ Expected behavior:
 - reading OpenClaw config or gateway state without mutation stays `LOW`
 - ordinary local dev dependency install may stay `MEDIUM`
 - plugin wiring, `plugins.entries`, gateway restart, delivery/router mutation, or cross-instance mutation should escalate to `HIGH`
-- plugin install failure should route to recovery instead of inviting ad hoc manifest surgery
+- plugin install failure should default to stop-and-route-to-recovery instead of inviting ad hoc manifest surgery
 - installation alone is not activation; reliable effect requires real OpenClaw injection
 - if activation still needs `AGENTS.md`, output the snippet; do not auto-edit `AGENTS.md` by default
 

@@ -115,6 +115,7 @@
 - `docs/design.md`：设计说明与分层模型
 - `docs/mvp-roadmap.md`：MVP 与 runtime 后续路线图
 - `docs/clawhub-publish.md`：ClawHub 上传说明与检查清单
+- `docs/runtime-guard-plan.md`：下一阶段 runtime 硬阻断方案
 
 ## 快速接入
 
@@ -316,3 +317,6 @@ clawhub publish watchdog-shrimp --version 0.1.0
 - 对边界说真话
 - 足够实用，能改善真实行为
 - 结构足够清晰，能为未来 runtime policy 设计提供输入
+
+如果目标升级成“高风险永不偷跑”，下一阶段就必须进入 runtime。
+见 [`docs/runtime-guard-plan.md`](./docs/runtime-guard-plan.md)。

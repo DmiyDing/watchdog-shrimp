@@ -115,6 +115,7 @@ If the requirement is guaranteed blocking of dangerous actions, that belongs in 
 - `docs/design.md`: design notes and layer model
 - `docs/mvp-roadmap.md`: MVP and runtime follow-up roadmap
 - `docs/clawhub-publish.md`: ClawHub upload notes and checklist
+- `docs/runtime-guard-plan.md`: next-phase runtime hard-stop plan
 
 ## Quick Start
 
@@ -316,3 +317,6 @@ That is the right open-source posture:
 - explicit about limits
 - practical enough to improve real behavior
 - structured enough to inform future runtime policy design
+
+If the goal becomes "high-risk actions never slip through", the next phase is runtime work.
+See [`docs/runtime-guard-plan.md`](./docs/runtime-guard-plan.md).

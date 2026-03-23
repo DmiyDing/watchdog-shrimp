@@ -20,7 +20,7 @@ Proceed directly only if all are true:
 
 ## MEDIUM Check
 
-Use one short confirmation if any are true:
+Direct-execute as `MEDIUM` if any are true:
 - multiple file edits with limited blast radius
 - new behavior but not core runtime/policy
 - internal send or limited-side-effect API call
@@ -58,6 +58,7 @@ Approval rule:
 - plugin install/remove/update -> guarded installer workflow first
 - failed mutation, unstable gateway, or partial destructive state -> recovery workflow first
 - if a named guarded workflow is unavailable, say that directly and stay conservative
+- failed plugin install followed by requests to hand-patch manifest or force the install -> default to stop-and-route-to-recovery
 
 ## Activation Check
 
