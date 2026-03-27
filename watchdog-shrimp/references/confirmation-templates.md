@@ -20,7 +20,13 @@ Pattern:
 
 ## HIGH
 
-Use a compact four-point confirmation.
+Use a compact five-field confirmation:
+- intent/action
+- scope
+- impact
+- consequence
+- continue or cancel
+
 State the possible consequence explicitly.
 
 ### Chinese
@@ -29,8 +35,9 @@ State the possible consequence explicitly.
 **[风险: 高]** 这一步会执行高风险操作，不能直接继续。
 **我将执行**：删除 `X`
 **影响范围**：`Y`
-**可能后果**：`Z`
-**请确认**：是否继续？
+**影响程度**：`Z`
+**可能后果**：`W`
+**请确认**：继续或取消？
 ```
 
 ### English
@@ -38,9 +45,10 @@ State the possible consequence explicitly.
 ```markdown
 **[Risk: High]** This is a high-risk action, so I am stopping before execution.
 **Action**: delete `X`
-**Impact**: `Y`
-**Possible Consequence**: `Z`
-**Next Step**: confirm whether to continue.
+**Scope**: `Y`
+**Impact**: `Z`
+**Possible Consequence**: `W`
+**Continue or Cancel**:
 ```
 
 ## OpenClaw-Specific Notes

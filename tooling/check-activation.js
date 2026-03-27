@@ -17,12 +17,19 @@ function normalize(text) {
   return text.replace(/\r\n/g, "\n").trim();
 }
 
-function extractSnippet(markdown) {
-  const match = markdown.match(/```(?:md|markdown)?[ \t]*\n([\s\S]*?)\n```/i);
-  if (!match) {
+function extractSnippets(markdown) {
+  // Extract ALL fenced markdown blocks from agents-snippet.md
+  // This supports bilingual activation: both English and Chinese snippets are valid
+  const snippets = [];
+  const regex = /```(?:md|markdown)?[ \t]*\n([\s\S]*?)\n```/gi;
+  let match;
+  while ((match = regex.exec(markdown)) !== null) {
+    snippets.push(normalize(match[1]));
+  }
+  if (snippets.length === 0) {
     throw new Error("could not find fenced markdown snippet in agents-snippet.md");
   }
-  return normalize(match[1]);
+  return snippets;
 }
 
 function printStatus(status, message) {
@@ -41,9 +48,9 @@ function finish(status, code, message) {
   process.exit(code);
 }
 
-let snippet;
+let snippets;
 try {
-  snippet = extractSnippet(fs.readFileSync(snippetPath, "utf8"));
+  snippets = extractSnippets(fs.readFileSync(snippetPath, "utf8"));
 } catch (error) {
   console.error(`activation-check: FAIL - ${error.message}`);
   process.exit(1);
@@ -55,13 +62,25 @@ if (!fs.existsSync(targetPath)) {
 
 const agentsContent = normalize(fs.readFileSync(targetPath, "utf8"));
 const snippetHeader = "## Execution Governance (watchdog-shrimp)";
+const snippetHeaderZh = "## 执行治理 (watchdog-shrimp)";
 const hasWatchdogBlock =
-  agentsContent.includes(snippetHeader) || agentsContent.toLowerCase().includes("watchdog-shrimp");
+  agentsContent.includes(snippetHeader) ||
+  agentsContent.includes(snippetHeaderZh) ||
+  agentsContent.toLowerCase().includes("watchdog-shrimp");
 
-if (agentsContent.includes(snippet)) {
-  finish("ACTIVE", 0, "target contains the exact activation snippet");
+// Check if target matches ANY of the valid snippets (English or Chinese)
+const matchesAnySnippet = snippets.some((s) => agentsContent.includes(s));
+
+if (matchesAnySnippet) {
+  finish("ACTIVE", 0, "target contains a valid activation snippet (English or Chinese)");
 }
 
+// DRIFT: watchdog-shrimp content exists but doesn't match any known snippet.
+// This can happen when:
+// - User manually copied the snippet but modified it
+// - File contains watchdog-shrimp references/headers but no activation block
+// - Partial activation attempt (e.g., copied from README but not from agents-snippet.md)
+// Resolution: Compare against agents-snippet.md and paste the exact snippet.
 if (hasWatchdogBlock) {
   finish("DRIFT", 2, "watchdog-shrimp activation content exists but does not exactly match the snippet");
 }

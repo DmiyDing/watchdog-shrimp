@@ -53,7 +53,7 @@ They should not silently edit `AGENTS.md` or claim activation is complete when i
 
 - `LOW`: execute directly, verify the result, then report
 - `MEDIUM`: execute directly, verify the result, then report
-- `HIGH`: require explicit second confirmation on intent, scope, impact, and go/no-go before any execution
+- `HIGH`: require explicit second confirmation on intent, scope, impact, consequence, and continue/cancel before any execution
 
 ## When To Use
 
@@ -110,7 +110,7 @@ Preference adaptation:
 Map risk to behavior:
 - `LOW` -> execute -> verify -> report
 - `MEDIUM` -> execute -> verify -> report
-- `HIGH` -> confirm intent + scope + impact + continue? -> wait
+- `HIGH` -> confirm intent + scope + impact + consequence + continue? -> wait
 
 ### 4. Recovery Layer
 
@@ -152,9 +152,10 @@ Report clearly after execution.
 ### HIGH
 
 Require second confirmation that explicitly covers:
-- intended action
-- impact scope
-- possible consequence
+- intent
+- scope
+- impact
+- consequence
 - continue or cancel
 
 Do not continue until the user confirms.

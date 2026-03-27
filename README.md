@@ -56,7 +56,7 @@ This repository needs real OpenClaw injection to become active governance.
 
 - `LOW`: execute directly, verify, then report
 - `MEDIUM`: execute directly, verify, then report
-- `HIGH`: require explicit second confirmation on intent, scope, impact, consequence, and go/no-go
+- `HIGH`: require explicit second confirmation on intent, scope, impact, consequence, and continue/cancel
 
 ## Why It Is OpenClaw-Specific
 
@@ -259,11 +259,31 @@ Run the local validator with:
 npm run validate:evals
 ```
 
-Check activation drift with:
+Check HIGH confirmation field consistency across English-language paths (SKILL.md, agents-snippet.md, confirmation-templates.md, risk-matrix.md). Chinese snippet and README wording are verified by RELEASE-CHECKLIST manual review:
+
+```bash
+npm run validate:consistency
+```
+
+Failure indicates English HIGH fields have drifted (e.g., missing "consequence" in one file, "go/no-go" vs "continue/cancel" mismatch). It does NOT validate Chinese snippet correctness.
+
+Check activation status (`--warn-only` mode, non-blocking for local use):
+
+```bash
+npm run validate:activation
+```
+
+For strict gate (exit code 0/2/3, CI blocking):
 
 ```bash
 node tooling/check-activation.js
 ```
+
+**For CI/release gates, prefer strict mode** (`node tooling/...` or `npm run validate:ci`).
+
+Available strict aliases (exit non-zero on DRIFT/NOT ACTIVE):
+- `npm run validate:activation:strict` → `node tooling/check-activation.js`
+- `npm run validate:workspace-sync:strict` → `node tooling/check-workspace-sync.js`
 
 Check whether the active workspace copy has drifted from this repository:
 
@@ -282,7 +302,25 @@ Use `npm run validate:ci` only in CI or environment images where the OpenClaw ta
 
 Common strict-mode failure meanings:
 - `activation-check: NOT ACTIVE`: the target `AGENTS.md` path does not exist yet, or the exact snippet has not been injected
+- `activation-check: DRIFT`: the target contains watchdog-shrimp references or headers but the snippet does not exactly match — common causes: copied from README instead of agents-snippet.md, manually modified snippet, or keyword mention without activation block
 - `workspace-sync: DRIFT`: the canonical workspace skill path is missing, stale, or differs from the repository copy
+
+**Exit codes for CI integration:**
+
+| Script | 0 | 2 | 3 |
+|--------|---|---|---|
+| `check-activation.js` | ACTIVE | DRIFT | NOT ACTIVE |
+| `check-workspace-sync.js` | SYNCED | DRIFT | NOT ACTIVE |
+
+**Custom target paths:**
+
+```bash
+# Check a non-default AGENTS location
+node tooling/check-activation.js /path/to/custom/AGENTS.md
+
+# Check a non-default workspace sync target
+node tooling/check-workspace-sync.js /path/to/custom/skills/watchdog-shrimp
+```
 
 Minimal strict-gate runbook:
 1. Create the real always-injected target file for your environment, such as `~/.openclaw/workspace/AGENTS.md`.

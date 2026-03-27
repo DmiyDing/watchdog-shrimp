@@ -259,11 +259,31 @@ npm run validate
 npm run validate:evals
 ```
 
-检查激活状态漂移可运行：
+检查 HIGH 确认字段在英文路径（SKILL.md、agents-snippet.md、confirmation-templates.md、risk-matrix.md）之间的一致性。中文 snippet 与 README 口径依赖 RELEASE-CHECKLIST 人工核对：
+
+```bash
+npm run validate:consistency
+```
+
+失败表示英文 HIGH 字段出现漂移（如某文件漏了"consequence"、或"go/no-go"与"continue/cancel"不一致）。该脚本不校验中文 snippet 正确性。
+
+检查激活状态（`--warn-only` 模式，本地非阻断）：
+
+```bash
+npm run validate:activation
+```
+
+严格门禁模式（退出码 0/2/3，CI 阻断）：
 
 ```bash
 node tooling/check-activation.js
 ```
+
+**CI/发布门禁应优先使用严格模式**（`node tooling/...` 或 `npm run validate:ci`）。
+
+可用的严格模式别名（DRIFT/NOT ACTIVE 时退出非零）：
+- `npm run validate:activation:strict` → `node tooling/check-activation.js`
+- `npm run validate:workspace-sync:strict` → `node tooling/check-workspace-sync.js`
 
 检查当前 workspace 生效副本是否与仓库内容漂移：
 
@@ -282,7 +302,25 @@ npm run validate:ci
 
 strict 模式常见失败含义：
 - `activation-check: NOT ACTIVE`：目标 `AGENTS.md` 路径尚不存在，或尚未注入精确 snippet
+- `activation-check: DRIFT`：目标包含 watchdog-shrimp 引用或标题，但 snippet 与源文件不完全匹配 — 常见原因：从 README 复制而非 agents-snippet.md、手动修改过 snippet、或仅提及关键字而未粘贴激活块
 - `workspace-sync: DRIFT`：canonical workspace skill 路径缺失、过时，或与仓库副本不一致
+
+**CI 集成退出码速查：**
+
+| 脚本 | 0 | 2 | 3 |
+|------|---|---|---|
+| `check-activation.js` | ACTIVE | DRIFT | NOT ACTIVE |
+| `check-workspace-sync.js` | SYNCED | DRIFT | NOT ACTIVE |
+
+**自定义目标路径：**
+
+```bash
+# 检查非默认 AGENTS 位置
+node tooling/check-activation.js /path/to/custom/AGENTS.md
+
+# 检查非默认 workspace sync 目标
+node tooling/check-workspace-sync.js /path/to/custom/skills/watchdog-shrimp
+```
 
 strict gate 最小准备 runbook：
 1. 在你的真实 always-injected 入口创建目标文件，例如 `~/.openclaw/workspace/AGENTS.md`
