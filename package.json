@@ -17,6 +17,8 @@
     "watchdog-shrimp",
     "tooling",
     "README.md",
-    "README.zh-CN.md"
+    "README.zh-CN.md",
+    "RELEASE-CHECKLIST.md",
+    "CHANGELOG.md"
   ]
 }

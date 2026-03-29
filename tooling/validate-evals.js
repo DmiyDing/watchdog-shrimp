@@ -5,6 +5,7 @@ const path = require("path");
 
 const root = path.resolve(__dirname, "..");
 const evalPath = path.join(root, "watchdog-shrimp", "evals", "evals.json");
+
 const requiredScenarioTags = [
   "openclaw-readonly",
   "medium-direct",
@@ -13,13 +14,17 @@ const requiredScenarioTags = [
   "activation-boundary",
   "external-send",
   "no-tail-filler",
+  "critical-confirmation",
+  "single-instance-profile",
+  "authorization-window",
 ];
 
-const allowedRiskLevels = new Set(["LOW", "MEDIUM", "HIGH"]);
+const allowedRiskLevels = new Set(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
 const expectedBehaviorByRisk = {
   LOW: new Set(["execute-directly", "informational-no-governance-gate"]),
   MEDIUM: new Set(["execute-directly"]),
   HIGH: new Set(["hard-stop-confirmation", "stop-and-route-to-recovery"]),
+  CRITICAL: new Set(["critical-itemized-confirmation"]),
 };
 
 function fail(message) {
@@ -40,10 +45,6 @@ function readJson(filePath) {
   }
 }
 
-function countWhere(items, predicate) {
-  return items.reduce((count, item) => count + (predicate(item) ? 1 : 0), 0);
-}
-
 const evals = readJson(evalPath);
 
 if (!Array.isArray(evals)) {
@@ -51,12 +52,12 @@ if (!Array.isArray(evals)) {
   process.exit(1);
 }
 
-if (evals.length < 10) {
-  fail(`expected at least 10 evals, found ${evals.length}`);
+if (evals.length < 12) {
+  fail(`expected at least 12 evals, found ${evals.length}`);
 }
 
 const seenQueries = new Set();
-const riskCounts = { LOW: 0, MEDIUM: 0, HIGH: 0 };
+const riskCounts = { LOW: 0, MEDIUM: 0, HIGH: 0, CRITICAL: 0 };
 
 evals.forEach((entry, index) => {
   const label = `entry[${index}]`;
@@ -66,8 +67,7 @@ evals.forEach((entry, index) => {
     return;
   }
 
-  const requiredKeys = ["query", "should_trigger", "risk_level", "expected_behavior"];
-  for (const key of requiredKeys) {
+  for (const key of ["query", "should_trigger", "risk_level", "expected_behavior"]) {
     if (!(key in entry)) {
       fail(`${label} missing required key "${key}"`);
     }
@@ -86,7 +86,7 @@ evals.forEach((entry, index) => {
   }
 
   if (!allowedRiskLevels.has(entry.risk_level)) {
-    fail(`${label}.risk_level must be one of LOW, MEDIUM, HIGH`);
+    fail(`${label}.risk_level must be one of LOW, MEDIUM, HIGH, CRITICAL`);
   } else {
     riskCounts[entry.risk_level] += 1;
   }
@@ -129,22 +129,33 @@ evals.forEach((entry, index) => {
   }
 });
 
-const hasTag = (tag) => evals.some((entry) => Array.isArray(entry.scenario_tags) && entry.scenario_tags.includes(tag));
+const hasTag = (tag) =>
+  evals.some((entry) => Array.isArray(entry.scenario_tags) && entry.scenario_tags.includes(tag));
+
 const hasInformational = hasTag("informational");
 const hasOpenClawSensitiveHigh = hasTag("openclaw-plugin-change") || hasTag("openclaw-config-mutation");
 const hasReadOnlyOpenClawLow = hasTag("openclaw-readonly");
 const hasRecoveryRoute = hasTag("recovery-route");
 const hasGatewayRecoveryRoute = hasTag("failed-plugin-install") || hasTag("gateway-failure");
-const hasExternalSendHigh = hasTag("external-send");
+const hasExternalSend = hasTag("external-send");
+const hasCriticalConfirmation = hasTag("critical-confirmation");
+const hasSingleInstanceProfile = hasTag("single-instance-profile");
+const hasAuthorizationWindow = hasTag("authorization-window");
+
 const hasLowNoPermissionConstraint = evals.some(
-  (entry) => entry.risk_level === "LOW" && Array.isArray(entry.must_not) && entry.must_not.includes("ask-for-permission-first")
+  (entry) =>
+    entry.risk_level === "LOW" &&
+    Array.isArray(entry.must_not) &&
+    (entry.must_not.includes("ask-for-permission-first") || entry.must_not.includes("ask-for-confirmation"))
 );
+
 const hasMediumNoConfirmationConstraint = evals.some(
   (entry) =>
     entry.risk_level === "MEDIUM" &&
     Array.isArray(entry.must_not) &&
     (entry.must_not.includes("ask-for-confirmation") || entry.must_not.includes("repeat-confirmation"))
 );
+
 const hasHighNoImplicitConsentConstraint = evals.some(
   (entry) =>
     entry.risk_level === "HIGH" &&
@@ -152,6 +163,16 @@ const hasHighNoImplicitConsentConstraint = evals.some(
     (entry.must_not.includes("execute-before-explicit-approval") ||
       entry.must_not.includes("treat-acknowledgment-as-consent"))
 );
+
+const hasCriticalNoMergedApprovalConstraint = evals.some(
+  (entry) =>
+    entry.risk_level === "CRITICAL" &&
+    Array.isArray(entry.must_not) &&
+    (entry.must_not.includes("merge-approvals") ||
+      entry.must_not.includes("execute-before-itemized-approval") ||
+      entry.must_not.includes("assume-approval-window-covers-critical"))
+);
+
 const hasActivationBoundaryConstraint = evals.some(
   (entry) =>
     Array.isArray(entry.scenario_tags) &&
@@ -206,8 +227,20 @@ if (!hasGatewayRecoveryRoute) {
   fail("expected at least one failed-plugin or failed-gateway recovery-routing eval");
 }
 
-if (!hasExternalSendHigh) {
-  fail("expected at least one external-send HIGH-risk eval");
+if (!hasExternalSend) {
+  fail("expected at least one external-send eval");
+}
+
+if (!hasCriticalConfirmation) {
+  fail("expected at least one CRITICAL eval");
+}
+
+if (!hasSingleInstanceProfile) {
+  fail("expected at least one single-instance-profile eval");
+}
+
+if (!hasAuthorizationWindow) {
+  fail("expected at least one authorization-window eval");
 }
 
 if (!hasLowNoPermissionConstraint) {
@@ -220,6 +253,10 @@ if (!hasMediumNoConfirmationConstraint) {
 
 if (!hasHighNoImplicitConsentConstraint) {
   fail("expected at least one HIGH eval that forbids execution before explicit approval");
+}
+
+if (!hasCriticalNoMergedApprovalConstraint) {
+  fail("expected at least one CRITICAL eval that forbids merged or implicit critical approval");
 }
 
 if (!hasActivationBoundaryConstraint) {
@@ -245,5 +282,7 @@ if (process.exitCode && process.exitCode !== 0) {
 }
 
 pass(`loaded ${evals.length} evals from ${path.relative(root, evalPath)}`);
-pass(`risk distribution LOW=${riskCounts.LOW} MEDIUM=${riskCounts.MEDIUM} HIGH=${riskCounts.HIGH}`);
+pass(
+  `risk distribution LOW=${riskCounts.LOW} MEDIUM=${riskCounts.MEDIUM} HIGH=${riskCounts.HIGH} CRITICAL=${riskCounts.CRITICAL}`
+);
 pass("coverage checks passed");

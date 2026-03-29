@@ -2,11 +2,11 @@
 
 /**
  * Cross-file consistency checker for watchdog-shrimp
- * Verifies HIGH confirmation fields match across:
+ * Verifies HIGH / CRITICAL confirmation fields match across:
  * - SKILL.md (Core Policy + Execution Strategy)
  * - agents-snippet.md (English activation snippet)
  * - confirmation-templates.md (English template)
- * - risk-matrix.md (HIGH Behavior section)
+ * - risk-matrix.md (HIGH / CRITICAL Behavior section)
  *
  * Note: This checker validates English-language HIGH fields only.
  * Chinese activation snippet consistency is validated separately by
@@ -27,6 +27,7 @@ const files = {
 
 // Expected HIGH confirmation fields (canonical)
 const EXPECTED_HIGH_FIELDS = ["intent", "scope", "impact", "consequence", "continue"];
+const EXPECTED_CRITICAL_FIELDS = ["action", "scope", "impact", "consequence", "authorization", "continue"];
 
 function fail(message) {
   console.error(`consistency-check: FAIL - ${message}`);
@@ -181,7 +182,6 @@ function checkConfirmationTemplates(content) {
 
 // Check 5: risk-matrix.md HIGH Behavior section
 function checkRiskMatrix(content) {
-  // Look for HIGH Behavior section
   const highBehaviorMatch = content.match(/## HIGH[\s\S]*?Behavior:([\s\S]*?)(?=\n##|$)/i);
   if (!highBehaviorMatch) {
     fail("risk-matrix.md: Cannot find HIGH Behavior section");
@@ -204,6 +204,76 @@ function checkRiskMatrix(content) {
 
   pass("risk-matrix.md HIGH fields OK");
   return true;
+}
+
+function checkCriticalCoverage(content, agentsContent, templatesContent, riskMatrixContent) {
+  let ok = true;
+
+  if (!/`CRITICAL`:/.test(content)) {
+    fail("SKILL.md: Cannot find CRITICAL line in Core Policy section");
+    ok = false;
+  }
+
+  const criticalSectionMatch = content.match(/### CRITICAL[\s\S]*?Require itemized confirmation that explicitly covers:\s*([\s\S]*?)(?=\n\n|Do not collapse)/);
+  if (!criticalSectionMatch) {
+    fail("SKILL.md: Cannot find CRITICAL Execution Strategy section");
+    ok = false;
+  } else {
+    const listContent = criticalSectionMatch[1].toLowerCase();
+    const missing = EXPECTED_CRITICAL_FIELDS.filter((field) => !listContent.includes(field));
+    if (missing.length > 0) {
+      fail(`SKILL.md CRITICAL section missing fields: ${missing.join(", ")}`);
+      ok = false;
+    }
+  }
+
+  const agentsCriticalLine = agentsContent.match(/`CRITICAL`:[^\n]*/);
+  if (!agentsCriticalLine) {
+    fail("agents-snippet.md: Cannot find CRITICAL line");
+    ok = false;
+  } else {
+    const line = agentsCriticalLine[0].toLowerCase();
+    const missing = ["critical", "itemized", "approval"].filter((token) => !line.includes(token));
+    if (missing.length > 0) {
+      fail(`agents-snippet.md CRITICAL line missing tokens: ${missing.join(", ")}`);
+      ok = false;
+    }
+  }
+
+  const criticalTemplateMatch = templatesContent.match(/### Critical Example[\s\S]*?```markdown([\s\S]*?)```/);
+  if (!criticalTemplateMatch) {
+    fail("confirmation-templates.md: Cannot find Critical Example template");
+    ok = false;
+  } else {
+    const template = criticalTemplateMatch[1];
+    const requiredFields = ["Critical Action Items", "Scope", "Impact", "Possible Consequence", "Authorization Granularity", "Continue or Cancel"];
+    const missing = requiredFields.filter((field) => !template.includes(field));
+    if (missing.length > 0) {
+      fail(`confirmation-templates.md Critical Example missing fields: ${missing.join(", ")}`);
+      ok = false;
+    }
+  }
+
+  const criticalBehaviorMatch = riskMatrixContent.match(/## CRITICAL[\s\S]*?Behavior:([\s\S]*?)(?=\n##|$)/i);
+  if (!criticalBehaviorMatch) {
+    fail("risk-matrix.md: Cannot find CRITICAL Behavior section");
+    ok = false;
+  } else {
+    const behavior = criticalBehaviorMatch[1].toLowerCase();
+    const missing = ["item", "scope", "impact", "consequence", "authorization", "continue"].filter(
+      (token) => !behavior.includes(token)
+    );
+    if (missing.length > 0) {
+      fail(`risk-matrix.md CRITICAL Behavior missing tokens: ${missing.join(", ")}`);
+      ok = false;
+    }
+  }
+
+  if (ok) {
+    pass("CRITICAL confirmation fields OK");
+  }
+
+  return ok;
 }
 
 // Run all checks
@@ -231,8 +301,12 @@ if (riskMatrixContent) {
   if (!checkRiskMatrix(riskMatrixContent)) allPassed = false;
 }
 
+if (skillContent && agentsContent && templatesContent && riskMatrixContent) {
+  if (!checkCriticalCoverage(skillContent, agentsContent, templatesContent, riskMatrixContent)) allPassed = false;
+}
+
 if (allPassed && process.exitCode !== 1) {
-  pass("HIGH confirmation fields consistent in English-language paths (SKILL.md, agents-snippet.md, confirmation-templates.md, risk-matrix.md)");
+  pass("HIGH / CRITICAL confirmation fields consistent in English-language paths (SKILL.md, agents-snippet.md, confirmation-templates.md, risk-matrix.md)");
   pass("Note: Chinese snippet and README wording verified by RELEASE-CHECKLIST manual review");
   process.exit(0);
 } else {

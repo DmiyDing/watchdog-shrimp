@@ -7,6 +7,7 @@ This matrix is for OpenClaw execution governance, not broad requirement discover
 - `LOW`: execute directly, then verify and report
 - `MEDIUM`: execute directly, then verify and report
 - `HIGH`: force explicit second confirmation before any execution
+- `CRITICAL`: force itemized confirmation; do not merge authorization across actions
 
 ## LOW
 
@@ -69,6 +70,25 @@ Behavior:
 - ask continue or cancel
 - require explicit approval for the exact high-risk action
 
+## CRITICAL
+
+Default examples:
+- delete shared config, user data, or bulk directories
+- change auth/token wiring, shared router policy, or cross-instance delivery
+- broadcast to external/public audiences or trigger irreversible outbound delivery
+- run high-cost or unknown-cost paid loops / batch processing
+- combine delete + restart + external send + cost-bearing work under one approval
+
+Behavior:
+- stop before execution
+- enumerate each critical action item
+- confirm scope
+- confirm impact
+- confirm consequence
+- confirm authorization granularity
+- ask continue or cancel for each item
+- never accept one merged approval for future critical follow-up actions
+
 ## OpenClaw Escalation Rules
 
 Treat the following surfaces as OpenClaw-specific escalation points:
@@ -81,9 +101,30 @@ Treat the following surfaces as OpenClaw-specific escalation points:
 
 Classification rules:
 - reading these surfaces without mutation stays `LOW`
-- changing one of these surfaces is at least `HIGH`
+- changing a non-sensitive single-instance surface with backup + validation + rollback may be `MEDIUM`
+- changing one of these surfaces is otherwise at least `HIGH`
 - plugin install/remove plus config change plus restart is always `HIGH`
+- shared-router mutation, auth/token mutation, or cross-instance mutation is `CRITICAL`
 - if blast radius is unclear, classify as `HIGH` until scope is narrowed
+
+## Recoverability Downgrade Rule
+
+Some otherwise-sensitive local operations may downgrade to `MEDIUM` only when all are true:
+- single local instance
+- explicit backup already planned or completed
+- validation step is part of the same action
+- rollback path is explicit
+- blast radius is limited to the current workstation
+- no auth/token/router/plugin-permission mutation
+- no external send and no shared-instance effect
+
+If any of those conditions fail, keep the safer class.
+
+## Authorization Window Rule
+
+- an explicit bounded approval window may cover same-class `MEDIUM` actions and already-scoped `HIGH` follow-through until verification completes
+- it never covers `CRITICAL`
+- it expires on scope expansion, target change, blast-radius change, failed verification, new external send, new delete, or new cost class
 
 ## Preference-Aware Friction Rules
 
@@ -113,13 +154,31 @@ Reading config, summarizing risk, and proposing commands is still `LOW` if no mu
 ### External send is never LOW
 
 Internal team delivery may remain `MEDIUM`.
-Any outbound send that crosses the current organization boundary, reaches customers or external users, targets a public or broadcast channel, or touches identity-sensitive delivery is `HIGH`.
+External send to customers or other external users is usually `HIGH`.
+Broadcast, bulk touch, or effectively irreversible external send is `CRITICAL`.
 Treat abstract references such as `external delivery integrations` as escalation hints, not as a broader override of this outbound-send definition.
 
 ### Core configuration escalates
 
-Changes to core runtime configuration, approval policy, delivery routing, or secret handling are `HIGH`.
+Read-only checks stay `LOW`.
+Single-instance non-sensitive field tuning with backup + validation + rollback may be `MEDIUM`.
+Changes to auth/token/router/plugin-permission surfaces are `HIGH`.
+Cross-instance or shared-router configuration is `CRITICAL`.
 
 ### Cost-sensitive actions escalate
 
-If an action can generate meaningful spend, treat it as `HIGH` unless the user already gave explicit spending approval for that exact action class.
+Single small-cost calls already authorized and clearly in-budget may remain `MEDIUM`.
+Unknown-cost or bounded batch spend is `HIGH`.
+High-cost loops, bulk backlog processing, or unattended recurring spend is `CRITICAL`.
+
+### Restart risk depends on blast radius
+
+Single-instance local restart with health check and rollback-ready context may remain `MEDIUM`.
+Shared instance or externally visible restart is `HIGH`.
+Restart combined with shared routing, external impact, or critical bundled actions is `CRITICAL`.
+
+### Delete risk depends on target
+
+Deleting temporary test files or caches with obvious local blast radius may be `MEDIUM`.
+Deleting ordinary workspace files is `HIGH`.
+Deleting shared config, user data, or bulk directories is `CRITICAL`.
