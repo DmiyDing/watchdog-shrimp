@@ -19,6 +19,7 @@
   "files": [
     "watchdog-shrimp",
     "tooling",
+    "acceptance",
     "README.md",
     "README.zh-CN.md",
     "RELEASE-CHECKLIST.md",

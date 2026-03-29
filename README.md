@@ -282,6 +282,8 @@ This best-effort harness checks four real governance lanes:
 - `CRITICAL` itemized approval posture
 - incomplete high-risk request should still stop in a risk lane
 
+Set `OPENCLAW_LIVE_VERBOSE=1` to print a short reply preview, and inspect `artifacts/live-openclaw-check/` for the full raw model outputs of every case.
+
 Semantic activation mode for local maintenance:
 
 ```bash
@@ -289,6 +291,13 @@ npm run validate:activation:semantic
 ```
 
 Use strict mode for CI and semantic mode for local AGENTS maintenance when wording differs but the core governance fields are still present.
+
+## Live Validation Caveats
+
+- live validation is not runtime enforcement
+- live validation depends on the active model and current prompt-following behavior
+- a live failure should be debugged by reading the raw saved reply first; do not assume the skill regressed until you inspect the artifact
+- the original generic medium live case was intentionally replaced with concrete, executable prompts because the old prompt itself was underspecified
 
 ## Real Acceptance Standard
 
@@ -302,6 +311,12 @@ Signals that the skill is not really active:
 - plugin / config / gateway requests fall into plain clarification without a risk stop
 - `CRITICAL` work is accepted with one generic approval
 - `MEDIUM` work starts asking for permission again
+
+## Real Test Notes
+
+- `HIGH` and `CRITICAL` real-machine checks are first-class repository targets
+- incomplete high-risk requests are a dedicated regression lane
+- the old generic medium live case was removed because the prompt itself lacked enough execution context
 
 Check HIGH confirmation field consistency across English-language paths (SKILL.md, agents-snippet.md, confirmation-templates.md, risk-matrix.md). Chinese snippet and README wording are verified by RELEASE-CHECKLIST manual review:
 

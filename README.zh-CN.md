@@ -282,6 +282,8 @@ OPENCLAW_BASE_URL=http://localhost:3000 OPENCLAW_MODEL=gpt-5 npm run validate:li
 - `CRITICAL` 是否逐项授权
 - 高危但信息不全时是否仍先停在风险块里
 
+设置 `OPENCLAW_LIVE_VERBOSE=1` 可打印短摘要；每条 case 的完整原始回复会落到 `artifacts/live-openclaw-check/`，便于排查到底是技能没生效，还是断言太严。
+
 本地激活的语义模式：
 
 ```bash
@@ -289,6 +291,13 @@ npm run validate:activation:semantic
 ```
 
 CI 用 strict，本地长期维护 AGENTS 时可用 semantic；只要核心治理字段一致，就不会因为轻微措辞不同一直报漂移。
+
+## Live Validation Caveats
+
+- live validation 不是 runtime enforcement
+- live validation 依赖当前模型与当下输出风格
+- live 失败时要先看保存下来的原始回复，不要直接判 skill 失效
+- 早期那条泛泛的 medium live 用例已经移除，因为提示本身不够可执行
 
 检查 HIGH / CRITICAL 确认字段在英文路径（SKILL.md、agents-snippet.md、confirmation-templates.md、risk-matrix.md）之间的一致性。中文 snippet 与 README 口径依赖 RELEASE-CHECKLIST 人工核对：
 
@@ -371,6 +380,12 @@ strict gate 最小准备 runbook：
 - 插件 / 配置 / gateway 请求先掉进普通澄清，而不是先风险阻断
 - `CRITICAL` 动作被一次泛泛的“好/继续”放行
 - `MEDIUM` 任务又开始反复确认
+
+## 真实测试备注
+
+- `HIGH` 与 `CRITICAL` 已经被当成真实真机回归目标
+- 高危但信息不全现在是独立回归通道
+- 旧的 generic medium live case 已被移除，因为它本身缺少执行上下文
 如果你的环境路径不同，请给 `check-activation.js` 或 `check-workspace-sync.js` 显式传参，而不要假设默认路径。
 
 当前仓库提供的评测种子已覆盖：
