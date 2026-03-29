@@ -57,6 +57,7 @@ function finish(status, code, detail, diffs = []) {
   const workspaceRealPath = fs.existsSync(workspaceSkillPath) ? fs.realpathSync(workspaceSkillPath) : workspaceSkillPath;
   const extraRealPath = fs.existsSync(extraSkillPath) ? fs.realpathSync(extraSkillPath) : extraSkillPath;
   console.log(`workspace-sync: ${status}`);
+  console.log("canonical-name: clawgate (watchdog-shrimp is no longer accepted as the canonical skill name)");
   console.log(`repo: ${repoSkillPath}`);
   console.log(`repo-real: ${repoRealPath}`);
   console.log(`workspace: ${workspaceSkillPath}`);

@@ -35,6 +35,7 @@ function extractSnippets(markdown) {
 
 function printStatus(status, message) {
   console.log(`activation-check: ${status}`);
+  console.log("canonical-name: clawgate (watchdog-shrimp is no longer accepted as the canonical skill name)");
   console.log(
     `source-of-truth: clawgate/references/agents-snippet.md (${semanticMode ? "semantic match allowed" : "exact match required"})`
   );

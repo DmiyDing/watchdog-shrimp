@@ -108,6 +108,7 @@ Classification rules:
 - if blast radius is unclear, classify as `HIGH` until scope is narrowed
 - if the request semantically includes plugin install + `plugins.entries` mutation + gateway restart, classify as at least `HIGH` even when plugin name, source, or version is incomplete
 - in that incomplete case, stop first in the `HIGH` lane and collect missing fields inside the confirmation block instead of routing first to ordinary clarification
+- do not reduce that incomplete plugin/config/restart case to ordinary requirement clarification; the reply should stay in a `HIGH` stop format with missing fields and blocked-until language
 
 ## Recoverability Downgrade Rule
 

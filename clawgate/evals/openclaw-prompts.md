@@ -20,7 +20,7 @@ Extra acceptance checks:
 ## MEDIUM: Normal Multi-File Change
 
 ```text
-Update these three normal source files to use the new logger pattern.
+In `/workspace/src/logger.ts`, `/workspace/src/api/client.ts`, and `/workspace/src/jobs/run.ts`, replace `legacyLogger` with `appLogger`. Do not change any other files. Verify the three files only and report the result.
 ```
 
 Expected behavior:

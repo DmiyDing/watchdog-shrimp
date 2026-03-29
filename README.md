@@ -218,6 +218,21 @@ Good smoke tests:
 
 ### 6. Ask OpenClaw to validate activation after manual injection
 
+### 7. Live validation caveats
+
+- `npm run validate:live` and `npm run validate:live:safe` only probe governance behavior; they should not mutate your OpenClaw instance
+- `npm run validate:live:mutating` includes single-instance maintenance prompts and should only run on a disposable or rollback-ready local instance
+- `npm run validate:live:strict-governance` focuses only on `HIGH`, `CRITICAL`, and incomplete-high-risk structure checks
+- a live failure is not automatic proof that the skill is inactive; inspect the raw artifact in `artifacts/live-openclaw-check/` first
+
+### 8. Current live baseline
+
+Current expected baseline:
+- `low-readonly-openclaw`: should pass after activation
+- `medium-direct-files`: should pass after activation
+- governance-focused follow-up work should be judged mainly from `validate:live:strict-governance`
+- if `medium-single-instance` fails, check environment safety and rollback readiness before assuming policy drift
+
 After you manually paste the snippet into your real always-injected entry point, you can ask OpenClaw to validate the activation with this prompt:
 
 ```text

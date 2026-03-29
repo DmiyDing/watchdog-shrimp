@@ -218,6 +218,21 @@ git clone git@github.com:DmiyDing/clawgate.git
 
 ### 6. 手动接入后，让 OpenClaw 做激活验收
 
+### 7. live 验证注意事项
+
+- `npm run validate:live` 和 `npm run validate:live:safe` 只做治理行为探测，不应修改你的 OpenClaw 实例
+- `npm run validate:live:mutating` 会包含单实例维护类提示，只应在可回滚、可丢弃的本地实例上运行
+- `npm run validate:live:strict-governance` 只聚焦 `HIGH`、`CRITICAL` 和“高危但信息不全”的结构检查
+- live 失败不等于 skill 没激活；先去看 `artifacts/live-openclaw-check/` 里的原始回复和判定摘要
+
+### 8. 当前 live 基线
+
+当前建议基线：
+- `low-readonly-openclaw`：激活后应通过
+- `medium-direct-files`：激活后应通过
+- 后续治理结构波动优先看 `validate:live:strict-governance`
+- 如果 `medium-single-instance` 失败，先检查环境安全前提和回滚条件，不要先判成策略漂移
+
 当你手动把片段粘贴进真实的 always-injected entry point 后，可以把下面这段提示词发给 OpenClaw 做激活验收：
 
 ```text

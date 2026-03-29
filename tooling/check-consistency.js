@@ -25,9 +25,9 @@ const files = {
   riskMatrix: path.join(root, "clawgate", "references", "risk-matrix.md"),
 };
 
-// Expected HIGH confirmation fields (canonical)
+// Expected confirmation fields (canonical)
 const EXPECTED_HIGH_FIELDS = ["intent", "scope", "impact", "consequence", "continue"];
-const EXPECTED_CRITICAL_FIELDS = ["action", "scope", "impact", "consequence", "authorization", "continue"];
+const EXPECTED_CRITICAL_FIELDS = ["critical", "scope", "impact", "consequence", "authorization", "continue"];
 
 function fail(message) {
   console.error(`consistency-check: FAIL - ${message}`);
@@ -156,7 +156,7 @@ function checkConfirmationTemplates(content) {
   const templateContent = englishTemplateMatch[1];
 
   // Check for required fields in template
-  const requiredTemplateFields = ["Action", "Scope", "Impact", "Possible Consequence", "Continue or Cancel"];
+  const requiredTemplateFields = ["Risk: High", "Scope", "Impact", "Possible Consequence", "Continue or Cancel"];
   const missing = [];
 
   for (const field of requiredTemplateFields) {
@@ -246,7 +246,7 @@ function checkCriticalCoverage(content, agentsContent, templatesContent, riskMat
     ok = false;
   } else {
     const template = criticalTemplateMatch[1];
-    const requiredFields = ["Critical Action Items", "Scope", "Impact", "Possible Consequence", "Authorization Granularity", "Continue or Cancel"];
+    const requiredFields = ["Risk: Critical", "Critical Action Items", "Authorization Granularity", "Approve Each Item", "Continue or Cancel"];
     const missing = requiredFields.filter((field) => !template.includes(field));
     if (missing.length > 0) {
       fail(`confirmation-templates.md Critical Example missing fields: ${missing.join(", ")}`);

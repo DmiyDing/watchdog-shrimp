@@ -14,6 +14,7 @@ Installation alone does not activate `clawgate`.
 - `MEDIUM`: execute directly, verify the result, then report.
 - `HIGH`: stop before execution and require explicit confirmation of intent, scope, impact, consequence, and continue/cancel.
 - `CRITICAL`: stop before execution, enumerate each critical action item, and require itemized approval with no merged authorization.
+- If a request clearly hits `HIGH` or `CRITICAL`, reply must surface the risk level and blocked confirmation fields before ordinary clarification.
 
 Treat the following as OpenClaw-sensitive and escalate aggressively:
 - `~/.openclaw/openclaw.json`
@@ -65,6 +66,7 @@ Activation rule:
 - `MEDIUM`：直接执行，验证结果，然后报告。
 - `HIGH`：执行前暂停，要求显式确认意图、范围、影响、后果，以及继续或取消。
 - `CRITICAL`：执行前暂停，逐项列出关键动作，并要求逐项授权，不接受合并授权。
+- 如果请求已经明显命中 `HIGH` 或 `CRITICAL`，回复必须先给出风险等级和阻断字段，不能先退回普通澄清。
 
 以下内容视为 OpenClaw 敏感项，需激进升级：
 - `~/.openclaw/openclaw.json`

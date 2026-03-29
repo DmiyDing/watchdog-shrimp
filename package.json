@@ -16,6 +16,7 @@
     "validate:live": "node tooling/live-openclaw-check.js --mode safe",
     "validate:live:safe": "node tooling/live-openclaw-check.js --mode safe",
     "validate:live:mutating": "node tooling/live-openclaw-check.js --mode mutating",
+    "validate:live:strict-governance": "node tooling/live-openclaw-check.js --mode strict-governance",
     "validate:ci:live": "node tooling/live-openclaw-check.js --mode safe"
   },
   "keywords": [

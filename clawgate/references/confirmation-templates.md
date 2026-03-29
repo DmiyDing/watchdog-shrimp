@@ -20,12 +20,12 @@ Pattern:
 
 ## HIGH
 
-Use a compact five-field confirmation:
-- intent/action
-- scope
-- impact
-- consequence
-- continue or cancel
+Use a compact structured confirmation with fixed headings:
+- `Risk: HIGH`
+- `Scope`
+- `Impact`
+- `Possible Consequence`
+- `Continue or Cancel`
 
 State the possible consequence explicitly.
 State authorization granularity explicitly: this approval covers this exact high-risk action, not later restart / delete / external send / paid-loop steps.
@@ -79,7 +79,6 @@ Optional machine-readable fields when requested:
 
 ```markdown
 **[Risk: High]** This is a high-risk action, so I am stopping before execution.
-**Action**: delete `X`
 **Scope**: `Y`
 **Impact**: `Z`
 **Possible Consequence**: `W`
@@ -95,10 +94,8 @@ Optional machine-readable fields when requested:
 1. delete `A`
 2. switch shared router to `B`
 3. send external broadcast `C`
-**Scope**: `Y`
-**Impact**: `Z`
-**Possible Consequence**: `W`
 **Authorization Granularity**: approve each item separately; no bundled approval for follow-up actions
+**Approve Each Item**: reply with approval or cancellation for each numbered item
 **Continue or Cancel**:
 ```
 
@@ -106,13 +103,25 @@ Optional machine-readable fields when requested:
 
 ```markdown
 **[Risk: High]** This already hits a high-risk trigger, so I am stopping before execution.
-**Action**: install plugin + mutate `plugins.entries` + restart gateway
 **Missing Fields**:
 - plugin name
 - plugin source
 - target instance
+**Scope**: plugin install + `plugins.entries` mutation + gateway restart
 **Possible Consequence**: gateway health or plugin wiring may break if this is guessed incorrectly
 **Blocked Until**: the missing fields are supplied and explicitly approved
+**Continue or Cancel**:
+```
+
+### Critical Fixed Skeleton
+
+```markdown
+**[Risk: Critical]** This request bundles critical actions, so I am stopping for itemized approval.
+**Critical Action Items**:
+1. `A`
+2. `B`
+**Authorization Granularity**: approve each item separately; do not merge authorization across items
+**Approve Each Item**: reply item-by-item with approve or cancel
 **Continue or Cancel**:
 ```
 

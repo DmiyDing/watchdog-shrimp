@@ -16,6 +16,7 @@ metadata:
 - `LOW` and `MEDIUM` should execute, verify, and report
 - `HIGH` should stop for explicit approval
 - `CRITICAL` should stop for itemized approval; do not merge authorization across actions
+- `HIGH` and `CRITICAL` should prefer a stable governance-output protocol with explicit risk heading and blocked fields
 - no-tail-filler is a governance goal for `LOW` and `MEDIUM` execution-result endings
 - no-tail-filler does not apply to explicitly required structured fields in activation, audit, or validation templates
 - bounded approval windows may cover same-class `MEDIUM` work and already-scoped `HIGH` follow-through until verification completes; they never cover `CRITICAL`
@@ -121,8 +122,8 @@ Preference adaptation:
 Map risk to behavior:
 - `LOW` -> execute -> verify -> report
 - `MEDIUM` -> execute -> verify -> report
-- `HIGH` -> confirm intent + scope + impact + consequence + continue? -> wait
-- `CRITICAL` -> enumerate each critical action -> confirm each item -> execute only approved items -> verify -> report
+- `HIGH` -> output `Risk: HIGH` + `Scope` + `Impact` + `Possible Consequence` + `Continue or Cancel` -> wait
+- `CRITICAL` -> output `Risk: CRITICAL` + `Critical Action Items` + `Authorization Granularity` + `Approve Each Item` + `Continue or Cancel` -> wait -> execute only approved items -> verify -> report
 
 ### 4. Recovery Layer
 
@@ -178,10 +179,11 @@ Use a compact execution report shape when helpful:
 ### HIGH
 
 Require second confirmation that explicitly covers:
+- risk level
 - intent
 - scope
 - impact
-- consequence
+- possible consequence
 - continue or cancel
 
 Do not continue until the user confirms.
@@ -191,13 +193,29 @@ If key fields are missing but the request already hits a clear `HIGH` trigger, s
 
 If a bounded approval window was explicitly opened for this action class, do not re-ask for the already-scoped follow-through step unless scope, blast radius, target surface, or cost class expands.
 
+Prefer this field order when possible:
+- Risk: HIGH
+- Scope
+- Impact
+- Possible Consequence
+- Continue or Cancel
+
+If key fields are missing but the request already hits a clear `HIGH` trigger, do not downgrade to ordinary clarification.
+Keep the reply in the `HIGH` lane and include:
+- Risk: HIGH
+- Missing Fields
+- Blocked Until
+- Scope
+- Continue or Cancel
+
 ### CRITICAL
 
 Require itemized confirmation that explicitly covers:
+- risk level
 - each critical action item
 - scope
 - impact
-- consequence
+- possible consequence
 - authorization granularity
 - continue or cancel for each approved item
 
@@ -205,6 +223,13 @@ Do not collapse multiple critical actions into one approval.
 Do not treat a general "yes" as permission for deletes plus restart plus external send plus cost-bearing loops.
 Do not treat a prior approval window as permission for `CRITICAL`.
 Even after approval, execute critical items one by one, verify each item, and stop again if scope, health, or blast radius changes.
+
+Prefer this field order when possible:
+- Risk: CRITICAL
+- Critical Action Items
+- Authorization Granularity
+- Approve Each Item
+- Continue or Cancel
 
 ## Confirmation Style
 
@@ -230,6 +255,7 @@ The default critical confirmation should feel like this:
 When information is incomplete but the risk trigger is already obvious:
 - declare `HIGH` or `CRITICAL` first
 - list missing fields inside the confirmation block
+- state `Blocked Until`
 - require those fields before execution
 
 ## Required Skill Collaboration
