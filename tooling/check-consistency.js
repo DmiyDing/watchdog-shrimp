@@ -127,6 +127,7 @@ function checkAgentsSnippet(content) {
     return false;
   }
 
+  const snippetLower = content.toLowerCase();
   const fieldsStr = highLineMatch[0].toLowerCase();
   const missing = [];
 
@@ -138,6 +139,12 @@ function checkAgentsSnippet(content) {
 
   if (missing.length > 0) {
     fail(`agents-snippet.md HIGH line missing fields: ${missing.join(", ")}`);
+    return false;
+  }
+
+  const missingHighStructure = ["blocked until"].filter((token) => !snippetLower.includes(token));
+  if (missingHighStructure.length > 0) {
+    fail(`agents-snippet.md HIGH protocol missing tokens: ${missingHighStructure.join(", ")}`);
     return false;
   }
 
@@ -303,7 +310,10 @@ function checkCriticalCoverage(content, agentsContent, templatesContent, riskMat
     ok = false;
   } else {
     const line = agentsCriticalLine[0].toLowerCase();
-    const missing = ["critical", "itemized", "approval"].filter((token) => !line.includes(token));
+    const fullContent = agentsContent.toLowerCase();
+    const missing = ["critical", "authorization granularity", "approve each item", "blocked until"].filter(
+      (token) => !line.includes(token) && !fullContent.includes(token)
+    );
     if (missing.length > 0) {
       fail(`agents-snippet.md CRITICAL line missing tokens: ${missing.join(", ")}`);
       ok = false;
