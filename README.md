@@ -224,6 +224,8 @@ Good smoke tests:
 - `npm run validate:live:mutating` includes single-instance maintenance prompts and should only run on a disposable or rollback-ready local instance
 - `npm run validate:live:strict-governance` focuses only on `HIGH`, `CRITICAL`, and incomplete-high-risk structure checks
 - a live failure is not automatic proof that the skill is inactive; inspect the raw artifact in `artifacts/live-openclaw-check/` first
+- `validate:live:safe` must not include auth/token mutation or any case that can break instance reachability
+- `activation:strict` only passes after your real always-injected entry point matches `clawgate/references/agents-snippet.md` exactly
 
 ### 8. Current live baseline
 
@@ -232,6 +234,7 @@ Current expected baseline:
 - `medium-direct-files`: should pass after activation
 - governance-focused follow-up work should be judged mainly from `validate:live:strict-governance`
 - if `medium-single-instance` fails, check environment safety and rollback readiness before assuming policy drift
+- if `activation:strict` is still `DRIFT`, fix the injected snippet before trusting any live governance result
 
 After you manually paste the snippet into your real always-injected entry point, you can ask OpenClaw to validate the activation with this prompt:
 

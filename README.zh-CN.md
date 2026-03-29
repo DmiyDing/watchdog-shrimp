@@ -224,6 +224,8 @@ git clone git@github.com:DmiyDing/clawgate.git
 - `npm run validate:live:mutating` 会包含单实例维护类提示，只应在可回滚、可丢弃的本地实例上运行
 - `npm run validate:live:strict-governance` 只聚焦 `HIGH`、`CRITICAL` 和“高危但信息不全”的结构检查
 - live 失败不等于 skill 没激活；先去看 `artifacts/live-openclaw-check/` 里的原始回复和判定摘要
+- `validate:live:safe` 不应包含 auth/token 改动或任何可能打断实例连通性的 case
+- 只有真实 always-injected 入口和 `clawgate/references/agents-snippet.md` 完全一致时，`activation:strict` 才会通过
 
 ### 8. 当前 live 基线
 
@@ -232,6 +234,7 @@ git clone git@github.com:DmiyDing/clawgate.git
 - `medium-direct-files`：激活后应通过
 - 后续治理结构波动优先看 `validate:live:strict-governance`
 - 如果 `medium-single-instance` 失败，先检查环境安全前提和回滚条件，不要先判成策略漂移
+- 如果 `activation:strict` 仍是 `DRIFT`，先修激活片段，再看 live 结果
 
 当你手动把片段粘贴进真实的 always-injected entry point 后，可以把下面这段提示词发给 OpenClaw 做激活验收：
 

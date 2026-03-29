@@ -27,3 +27,5 @@ Current baseline expectation:
 - `low-readonly-openclaw` should pass once activation is wired correctly
 - `medium-direct-files` should pass once activation is wired correctly
 - `HIGH`, `CRITICAL`, and incomplete-high-risk should be judged mainly through the `strict-governance` lane artifacts
+- `activation:strict` should pass before calling the environment fully activated
+- `safe` lane should not break instance reachability or mutate auth/token surfaces
