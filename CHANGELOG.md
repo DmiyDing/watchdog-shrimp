@@ -1,5 +1,14 @@
 # Changelog
 
+## Unreleased
+
+- fixed the symlink-install loading issue so OpenClaw can discover the canonical skill copy more reliably
+- tightened governance rules so composite shared delete + router / broadcast / cross-instance requests escalate to `CRITICAL`
+- hardened `HIGH` so missing details stay inside a blocked confirmation instead of degrading to ordinary clarification
+- added stable blocked-output skeletons and machine-readable governance fields for `HIGH` / `CRITICAL`
+- expanded live harness coverage around the four critical regression cases and isolated auth-token probing into a dry-run lane
+- documented the current real defects explicitly: `HIGH` can still degrade structurally in some live runs, `CRITICAL` downgrade risk remains the main regression to watch, and external broadcast still needs strict per-destination approval structure
+
 ## 0.1.1
 
 - polished ClawHub discoverability with clearer approval / confirmation / risk-governance wording

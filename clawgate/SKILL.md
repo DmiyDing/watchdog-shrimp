@@ -17,6 +17,7 @@ metadata:
 - `HIGH` should stop for explicit approval
 - `CRITICAL` should stop for itemized approval; do not merge authorization across actions
 - `HIGH` and `CRITICAL` should prefer a stable governance-output protocol with explicit risk heading and blocked fields
+- machine-readable governance fields should stay stable when a harness or control plane expects them: `risk_level`, `blocked`, `missing_fields`, `approval_mode`, `continue_or_cancel`, `itemized_actions`
 - no-tail-filler is a governance goal for `LOW` and `MEDIUM` execution-result endings
 - no-tail-filler does not apply to explicitly required structured fields in activation, audit, or validation templates
 - bounded approval windows may cover same-class `MEDIUM` work and already-scoped `HIGH` follow-through until verification completes; they never cover `CRITICAL`
@@ -57,7 +58,7 @@ They should not silently edit `AGENTS.md` or claim activation is complete when i
 
 - `LOW`: execute directly, verify the result, then report
 - `MEDIUM`: execute directly, verify the result, then report
-- `HIGH`: require explicit second confirmation on intent, scope, impact, consequence, and continue/cancel before any execution
+- `HIGH`: require explicit second confirmation on scope, impact, consequence, and continue/cancel before any execution
 - `CRITICAL`: require itemized confirmation for each critical action; do not accept combined approval for future deletes, restarts, sends, or costly loops
 
 ## When To Use
@@ -92,8 +93,16 @@ The following surfaces are OpenClaw-sensitive and should escalate more aggressiv
 - outbound delivery integrations and external messaging paths
 - cross-instance operations, shared agent surfaces, or shared workspace automation
 
-If one request combines plugin change + config mutation + restart, treat the whole action as `HIGH` even if each sub-step might look only `MEDIUM` in isolation.
+If one request combines plugin change + config mutation + restart, treat the whole action as blocked `HIGH` even if each sub-step might look only `MEDIUM` in isolation.
 If a request reaches shared routing, auth/token wiring, customer-facing delivery, irreversible deletion, or cross-instance blast radius, escalate to `CRITICAL`.
+
+Composite critical escalation rule:
+- shared data deletion
+- shared router mutation
+- everyone / all users / all channels scope
+- cross-instance impact
+
+If any request hits two or more of those signals, force `CRITICAL`.
 
 ## Risk Layers
 
@@ -122,8 +131,8 @@ Preference adaptation:
 Map risk to behavior:
 - `LOW` -> execute -> verify -> report
 - `MEDIUM` -> execute -> verify -> report
-- `HIGH` -> output `Risk: HIGH` + `Scope` + `Impact` + `Possible Consequence` + `Continue or Cancel` -> wait
-- `CRITICAL` -> output `Risk: CRITICAL` + `Critical Action Items` + `Authorization Granularity` + `Approve Each Item` + `Continue or Cancel` -> wait -> execute only approved items -> verify -> report
+- `HIGH` -> output a blocked confirmation with `Risk: HIGH` + `Scope` + `Impact` + `Possible Consequence` + `Missing Fields` when relevant + `Continue or Cancel` -> wait
+- `CRITICAL` -> output a blocked confirmation with `Risk: CRITICAL` + `Critical Action Items` + `Authorization Granularity` + `Approve Each Item` + `Continue or Cancel` -> wait -> execute only approved items -> verify -> report
 
 ### 4. Recovery Layer
 
@@ -154,6 +163,7 @@ Escalate from `HIGH` to `CRITICAL` when any of the following applies:
 - the action touches auth/token wiring, shared router state, or irreversible customer-facing delivery
 - the action deletes shared config, user data, or bulk directories
 - the action starts high-cost loops, bulk paid processing, or unknown-cost batch execution
+- two or more composite critical escalation signals are present together
 
 ## Execution Strategy
 
@@ -171,7 +181,7 @@ Execute now.
 Verify the outcome.
 Report clearly after execution.
 
-Use a compact execution report shape when helpful:
+Use the compact execution report shape:
 - Action
 - Verify
 - Result
@@ -180,7 +190,6 @@ Use a compact execution report shape when helpful:
 
 Require second confirmation that explicitly covers:
 - risk level
-- intent
 - scope
 - impact
 - possible consequence
@@ -190,6 +199,7 @@ Do not continue until the user confirms.
 Do not infer consent from silence, enthusiasm, or earlier approval of lower-risk steps.
 Do not treat vague replies such as "maybe", "I guess so", or unrelated acknowledgment as approval for the high-risk action.
 If key fields are missing but the request already hits a clear `HIGH` trigger, stop as `HIGH`, list the missing fields, and require them before execution.
+If key fields are missing, the information-gathering step must stay nested inside the blocked confirmation block; it must not degrade into ordinary Q&A.
 
 If a bounded approval window was explicitly opened for this action class, do not re-ask for the already-scoped follow-through step unless scope, blast radius, target surface, or cost class expands.
 
@@ -198,6 +208,7 @@ Prefer this field order when possible:
 - Scope
 - Impact
 - Possible Consequence
+- Missing Fields
 - Continue or Cancel
 
 If key fields are missing but the request already hits a clear `HIGH` trigger, do not downgrade to ordinary clarification.
@@ -213,6 +224,7 @@ Keep the reply in the `HIGH` lane and include:
 Require itemized confirmation that explicitly covers:
 - risk level
 - each critical action item
+- audience groups or channels when outbound delivery is involved
 - scope
 - impact
 - possible consequence
@@ -331,7 +343,7 @@ Execution-result rule:
 - for LOW and MEDIUM execution results, do not end the reply with tail offers or meta suggestions (for example: `Next Step`, `If you need... I can...`, `Let me know if you want anything else`); stop after verify + report
 - for high risk, include action, scope, consequence, and continue/cancel
 - for critical risk, include per-item approval, authorization granularity, and explicit non-bundling of future actions
-- when a machine-readable governance report is requested, prefer these fields: `risk_level`, `decision`, `reason_codes`, `requires_confirmation`
+- when a machine-readable governance report is requested, prefer these fields: `risk_level`, `blocked`, `missing_fields`, `approval_mode`, `continue_or_cancel`, `itemized_actions`
 
 ## Integration Guidance
 

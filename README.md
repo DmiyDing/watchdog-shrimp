@@ -56,9 +56,16 @@ This repository needs real OpenClaw injection to become active governance.
 ## Core Behavior
 
 - `LOW`: execute directly, verify, then report
-- `MEDIUM`: execute directly, verify, then report
-- `HIGH`: require explicit second confirmation on intent, scope, impact, consequence, and continue/cancel
-- `CRITICAL`: require itemized approval with explicit authorization granularity
+- `MEDIUM`: execute directly, report with `Action` -> `Verify` -> `Result`
+- `HIGH`: require an actually blocked confirmation with `Risk: HIGH`, `Scope`, `Impact`, `Possible Consequence`, `Missing Fields` when relevant, and `Continue or Cancel`
+- `CRITICAL`: require itemized approval with explicit authorization granularity and `Approve Each Item`
+
+## Current Known Issues
+
+These are real governance gaps that this repository is actively fixing; they are not installation problems:
+- `HIGH` can still degrade into risk-flavored clarification instead of a truly blocked confirmation flow in some live runs
+- `CRITICAL` can still be downgraded to `HIGH` when a request bundles multiple dangerous signals
+- `external-broadcast` is already blocked, but older prompts and harness checks did not consistently enforce itemized approval per destination
 
 ## Why It Is OpenClaw-Specific
 
@@ -77,7 +84,8 @@ Reading these surfaces can still be `LOW`.
 Single-instance non-sensitive maintenance with backup + validation + rollback may stay `MEDIUM`.
 Mutating sensitive or shared surfaces is usually `HIGH`.
 Cross-instance shared-router, auth/token, bulk delete, or broadcast external work is `CRITICAL`.
-Combining plugin install + config mutation + restart is always `HIGH`.
+Combining plugin install + config mutation + restart is always blocked `HIGH`.
+If shared data deletion, shared router mutation, everyone scope, and cross-instance impact hit any two or more signals together, the request must be treated as `CRITICAL`.
 
 ## Without vs With
 
@@ -224,6 +232,7 @@ Good smoke tests:
 - `npm run validate:live` and `npm run validate:live:safe` only probe governance behavior; they should not mutate your OpenClaw instance
 - `npm run validate:live:smoke` is the shortest daily path and currently aliases the safe lane
 - `npm run validate:live:mutating` includes single-instance maintenance prompts and should only run on a disposable or rollback-ready local instance
+- `npm run validate:live:mutating:auth-token` is isolated, dry-run only, and must not execute a real auth-token mutation
 - `npm run validate:live:strict-governance` focuses only on `HIGH`, `CRITICAL`, and incomplete-high-risk structure checks
 - a live failure is not automatic proof that the skill is inactive; inspect the raw artifact in `artifacts/live-openclaw-check/` first
 - `validate:live:safe` must not include auth/token mutation or any case that can break instance reachability
@@ -235,7 +244,11 @@ Good smoke tests:
 Current expected baseline:
 - `low-readonly-openclaw`: should pass after activation
 - `medium-direct-files`: should pass after activation
-- governance-focused follow-up work should be judged mainly from `validate:live:strict-governance`
+- governance-focused follow-up work should be judged mainly from these four cases in `validate:live:strict-governance`:
+  - `plugin-install-config-restart`
+  - `shared-delete-router-rotate`
+  - `external-broadcast`
+  - `incomplete-high-risk-plugin-install`
 - if `medium-single-instance` fails, check environment safety and rollback readiness before assuming policy drift
 - if `activation:strict` is still `DRIFT`, fix the injected snippet before trusting any live governance result
 - `validate:live:safe` should complete all cases without timing out on the second case

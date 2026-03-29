@@ -56,9 +56,16 @@
 ## 核心行为
 
 - `LOW`：直接执行，验证结果，再汇报
-- `MEDIUM`：直接执行，验证结果，再汇报
-- `HIGH`：必须对意图、范围、影响、后果、是否继续做显式二次确认
-- `CRITICAL`：必须逐项授权，并明确授权粒度
+- `MEDIUM`：直接执行，并按 `Action` -> `Verify` -> `Result` 汇报
+- `HIGH`：必须给出真正阻断的确认块，至少包含 `Risk: HIGH`、`Scope`、`Impact`、`Possible Consequence`、必要时的 `Missing Fields`，以及 `Continue or Cancel`
+- `CRITICAL`：必须逐项授权，并明确授权粒度与 `Approve Each Item`
+
+## 当前已知真实问题
+
+这些是当前真实存在的治理缺陷，不是安装问题：
+- `HIGH` 仍可能退化成“带风险语气的澄清”，而不是严格阻断
+- `CRITICAL` 在复合危险操作上仍可能被降成 `HIGH`
+- `external-broadcast` 已能拦住，但旧模板与旧 harness 还没有稳定做到逐目标授权
 
 ## 它为什么是 OpenClaw 专用
 
@@ -77,7 +84,8 @@
 单实例、可备份、可验证、可回滚的非敏感维护可保持 `MEDIUM`。
 真正发生敏感或共享变更时，通常应视为 `HIGH`。
 跨实例共享路由、auth/token、批量删除、外部广播则应视为 `CRITICAL`。
-插件安装 + 配置变更 + 重启的组合，一律按 `HIGH` 处理。
+插件安装 + 配置变更 + 重启的组合，一律按阻断 `HIGH` 处理。
+如果共享数据删除、共享路由变更、全员范围、跨实例影响这四类信号命中任意两项以上，必须按 `CRITICAL` 处理。
 
 ## 没有它 vs 有了它
 

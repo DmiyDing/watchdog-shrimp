@@ -26,7 +26,7 @@ const files = {
 };
 
 // Expected confirmation fields (canonical)
-const EXPECTED_HIGH_FIELDS = ["intent", "scope", "impact", "consequence", "continue"];
+const EXPECTED_HIGH_FIELDS = ["scope", "impact", "consequence", "continue"];
 const EXPECTED_CRITICAL_FIELDS = ["critical", "scope", "impact", "consequence", "authorization", "continue"];
 
 function fail(message) {
@@ -156,11 +156,11 @@ function checkConfirmationTemplates(content) {
   const templateContent = englishTemplateMatch[1];
 
   // Check for required fields in template
-  const requiredTemplateFields = ["Risk: High", "Scope", "Impact", "Possible Consequence", "Continue or Cancel"];
+  const requiredTemplateFields = ["risk: high", "scope", "impact", "possible consequence", "continue or cancel"];
   const missing = [];
 
   for (const field of requiredTemplateFields) {
-    if (!templateContent.includes(field)) {
+    if (!templateContent.toLowerCase().includes(field)) {
       missing.push(field);
     }
   }
@@ -171,7 +171,7 @@ function checkConfirmationTemplates(content) {
   }
 
   // Check for "Next Step" which should be "Continue or Cancel"
-  if (templateContent.includes("Next Step") && !templateContent.includes("Continue or Cancel")) {
+  if (templateContent.includes("Next Step") && !templateContent.toLowerCase().includes("continue or cancel")) {
     fail('confirmation-templates.md uses "Next Step" instead of "Continue or Cancel"');
     return false;
   }
@@ -246,8 +246,8 @@ function checkCriticalCoverage(content, agentsContent, templatesContent, riskMat
     ok = false;
   } else {
     const template = criticalTemplateMatch[1];
-    const requiredFields = ["Risk: Critical", "Critical Action Items", "Authorization Granularity", "Approve Each Item", "Continue or Cancel"];
-    const missing = requiredFields.filter((field) => !template.includes(field));
+    const requiredFields = ["risk: critical", "critical action items", "authorization granularity", "approve each item", "continue or cancel"];
+    const missing = requiredFields.filter((field) => !template.toLowerCase().includes(field));
     if (missing.length > 0) {
       fail(`confirmation-templates.md Critical Example missing fields: ${missing.join(", ")}`);
       ok = false;

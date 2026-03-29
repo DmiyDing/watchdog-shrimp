@@ -43,6 +43,7 @@ Behavior:
 - do not ask for confirmation
 - do not add permission preamble
 - do not end the reply with tail offers or meta suggestions (for example: `Next Step`, `If you need, I can...`, `Let me know if you want anything else`); just execute, verify, and report
+- use the stable execution report order `Action` -> `Verify` -> `Result`
 - this rule does not ban explicit structured field names when a template requires them
 - execute now
 - verify outcome
@@ -63,12 +64,14 @@ Default examples:
 
 Behavior:
 - stop before execution
-- confirm intent
-- confirm scope
-- confirm impact
-- confirm consequence
-- ask continue or cancel
+- state `Risk: HIGH`
+- state `Scope`
+- state `Impact`
+- state `Possible Consequence`
+- if fields are missing, list them inside the blocked confirmation block instead of switching to normal Q&A
+- ask `Continue or Cancel`
 - require explicit approval for the exact high-risk action
+- state that execution is blocked until missing fields and approval are both supplied
 
 ## CRITICAL
 
@@ -81,12 +84,15 @@ Default examples:
 
 Behavior:
 - stop before execution
+- state `Risk: CRITICAL`
 - enumerate each critical action item
-- confirm scope
-- confirm impact
-- confirm consequence
+- state `Scope`
+- state `Impact`
+- state `Possible Consequence`
+- confirm audience groups or channels when outbound delivery is involved
 - confirm authorization granularity
-- ask continue or cancel for each item
+- require `Approve Each Item`
+- ask `Continue or Cancel`
 - never accept one merged approval for future critical follow-up actions
 
 ## OpenClaw Escalation Rules
@@ -104,11 +110,18 @@ Classification rules:
 - changing a non-sensitive single-instance surface with backup + validation + rollback may be `MEDIUM`
 - changing one of these surfaces is otherwise at least `HIGH`
 - plugin install/remove plus config change plus restart is always `HIGH`
+- if the request semantically includes plugin install + `plugins.entries` mutation + gateway restart, classify as blocked `HIGH` even when plugin name, source, or version is incomplete
+- incomplete plugin install + config mutation + restart must stay blocked `HIGH`; do not reduce it to ordinary clarification-first
 - shared-router mutation, auth/token mutation, or cross-instance mutation is `CRITICAL`
 - if blast radius is unclear, classify as `HIGH` until scope is narrowed
-- if the request semantically includes plugin install + `plugins.entries` mutation + gateway restart, classify as at least `HIGH` even when plugin name, source, or version is incomplete
-- in that incomplete case, stop first in the `HIGH` lane and collect missing fields inside the confirmation block instead of routing first to ordinary clarification
-- do not reduce that incomplete plugin/config/restart case to ordinary requirement clarification; the reply should stay in a `HIGH` stop format with missing fields and blocked-until language
+
+Composite escalation rule:
+- the following signals each count as one critical-escalation hit:
+  - shared data deletion
+  - shared router mutation
+  - everyone / all users / all channels scope
+  - cross-instance impact
+- if any request hits two or more of those signals, force `CRITICAL`
 
 ## Recoverability Downgrade Rule
 
