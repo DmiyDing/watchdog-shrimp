@@ -17,6 +17,7 @@ const requiredScenarioTags = [
   "critical-confirmation",
   "single-instance-profile",
   "authorization-window",
+  "incomplete-high-risk",
 ];
 
 const allowedRiskLevels = new Set(["LOW", "MEDIUM", "HIGH", "CRITICAL"]);
@@ -141,6 +142,7 @@ const hasExternalSend = hasTag("external-send");
 const hasCriticalConfirmation = hasTag("critical-confirmation");
 const hasSingleInstanceProfile = hasTag("single-instance-profile");
 const hasAuthorizationWindow = hasTag("authorization-window");
+const hasIncompleteHighRisk = hasTag("incomplete-high-risk");
 
 const hasLowNoPermissionConstraint = evals.some(
   (entry) =>
@@ -179,6 +181,14 @@ const hasActivationBoundaryConstraint = evals.some(
     entry.scenario_tags.includes("activation-boundary") &&
     Array.isArray(entry.must_not) &&
     entry.must_not.includes("auto-edit-agents-md")
+);
+const hasIncompleteHighRiskConstraint = evals.some(
+  (entry) =>
+    Array.isArray(entry.scenario_tags) &&
+    entry.scenario_tags.includes("incomplete-high-risk") &&
+    entry.risk_level === "HIGH" &&
+    Array.isArray(entry.must_not) &&
+    entry.must_not.includes("downgrade-to-clarify-first-without-risk-stop")
 );
 
 const tailFillerMustNotTokens = [
@@ -243,6 +253,10 @@ if (!hasAuthorizationWindow) {
   fail("expected at least one authorization-window eval");
 }
 
+if (!hasIncompleteHighRisk) {
+  fail("expected at least one incomplete-high-risk eval");
+}
+
 if (!hasLowNoPermissionConstraint) {
   fail("expected at least one LOW eval that forbids unnecessary permission prompts");
 }
@@ -261,6 +275,10 @@ if (!hasCriticalNoMergedApprovalConstraint) {
 
 if (!hasActivationBoundaryConstraint) {
   fail("expected at least one activation-boundary eval that forbids automatic AGENTS.md edits");
+}
+
+if (!hasIncompleteHighRiskConstraint) {
+  fail("expected at least one incomplete-high-risk eval that forbids downgrade-to-clarify-first-without-risk-stop");
 }
 
 if (!hasNoTailFillerConstraintForRiskLevel("LOW")) {

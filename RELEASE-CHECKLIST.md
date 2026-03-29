@@ -6,10 +6,11 @@ Use this before publishing or re-installing `watchdog-shrimp` into a live OpenCl
 
 1. **Run automated validation**: `npm run validate`
 2. **Check workspace sync** (if active copy exists): `npm run validate:workspace-sync`
-3. **Review consistency output**: Verify English HIGH / CRITICAL fields passed; Chinese is NOT automated
-4. **Manual Chinese verification**: Compare `README.zh-CN.md` + Chinese snippet against English fields
-5. **OpenClaw acceptance**: Run through LOW/MEDIUM/HIGH behavior checks
-6. **Version bump**: Update SKILL.md frontmatter, run `clawhub publish`
+3. **Run live probe when available**: `OPENCLAW_BASE_URL=... npm run validate:live`
+4. **Review consistency output**: Verify English HIGH / CRITICAL fields passed; Chinese is NOT automated
+5. **Manual Chinese verification**: Compare `README.zh-CN.md` + Chinese snippet against English fields
+6. **OpenClaw acceptance**: Run through LOW/MEDIUM/HIGH/CRITICAL behavior checks
+7. **Version bump**: Update SKILL.md frontmatter, run `clawhub publish`
 
 ## Repository Checks
 

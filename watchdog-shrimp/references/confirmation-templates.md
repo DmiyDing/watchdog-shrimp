@@ -30,6 +30,12 @@ Use a compact five-field confirmation:
 State the possible consequence explicitly.
 State authorization granularity explicitly: this approval covers this exact high-risk action, not later restart / delete / external send / paid-loop steps.
 
+Optional machine-readable fields when requested:
+- `risk_level`
+- `approval_required`
+- `approval_scope`
+- `blocked_until`
+
 ### Suggested execution report after HIGH
 
 - Changed Object
@@ -49,6 +55,13 @@ Use an itemized critical confirmation:
 - continue or cancel for each item
 
 Never accept one merged approval for multiple critical actions.
+
+Optional machine-readable fields when requested:
+- `risk_level`
+- `action_items`
+- `approval_required`
+- `approval_scope`
+- `blocked_until`
 
 ### Chinese
 
@@ -86,6 +99,20 @@ Never accept one merged approval for multiple critical actions.
 **Impact**: `Z`
 **Possible Consequence**: `W`
 **Authorization Granularity**: approve each item separately; no bundled approval for follow-up actions
+**Continue or Cancel**:
+```
+
+### High-Risk But Information Is Missing
+
+```markdown
+**[Risk: High]** This already hits a high-risk trigger, so I am stopping before execution.
+**Action**: install plugin + mutate `plugins.entries` + restart gateway
+**Missing Fields**:
+- plugin name
+- plugin source
+- target instance
+**Possible Consequence**: gateway health or plugin wiring may break if this is guessed incorrectly
+**Blocked Until**: the missing fields are supplied and explicitly approved
 **Continue or Cancel**:
 ```
 

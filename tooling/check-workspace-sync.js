@@ -53,10 +53,16 @@ function readNormalized(filePath) {
 }
 
 function finish(status, code, detail, diffs = []) {
+  const repoRealPath = fs.existsSync(repoSkillPath) ? fs.realpathSync(repoSkillPath) : repoSkillPath;
+  const workspaceRealPath = fs.existsSync(workspaceSkillPath) ? fs.realpathSync(workspaceSkillPath) : workspaceSkillPath;
+  const extraRealPath = fs.existsSync(extraSkillPath) ? fs.realpathSync(extraSkillPath) : extraSkillPath;
   console.log(`workspace-sync: ${status}`);
   console.log(`repo: ${repoSkillPath}`);
+  console.log(`repo-real: ${repoRealPath}`);
   console.log(`workspace: ${workspaceSkillPath}`);
+  console.log(`workspace-real: ${workspaceRealPath}`);
   console.log(`extra: ${extraSkillPath}`);
+  console.log(`extra-real: ${extraRealPath}`);
   console.log(`detail: ${detail}`);
   if (diffs.length > 0) {
     console.log("diffs:");

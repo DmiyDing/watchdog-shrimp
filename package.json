@@ -10,8 +10,11 @@
     "validate:consistency": "node tooling/check-consistency.js",
     "validate:activation": "node tooling/check-activation.js --warn-only",
     "validate:activation:strict": "node tooling/check-activation.js",
+    "validate:activation:semantic": "node tooling/check-activation.js --semantic",
     "validate:workspace-sync": "node tooling/check-workspace-sync.js --warn-only",
-    "validate:workspace-sync:strict": "node tooling/check-workspace-sync.js"
+    "validate:workspace-sync:strict": "node tooling/check-workspace-sync.js",
+    "validate:live": "node tooling/live-openclaw-check.js",
+    "validate:ci:live": "node tooling/live-openclaw-check.js"
   },
   "files": [
     "watchdog-shrimp",

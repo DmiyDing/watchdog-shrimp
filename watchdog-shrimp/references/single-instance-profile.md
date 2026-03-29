@@ -27,6 +27,13 @@ You may downgrade some otherwise-sensitive operations to `MEDIUM` only when all 
 - restart one local OpenClaw service and run a health check -> `MEDIUM`
 - delete temporary test files or local cache under the current workspace -> `MEDIUM`
 
+Whitelist-style examples:
+- local port change
+- non-sensitive bind / UI host tuning
+- local log-level change
+- local health-check restart
+- local memory / skills refresh without auth/router/plugin-permission mutation
+
 Still escalate:
 - token/auth changes -> at least `HIGH`
 - plugin wiring changes -> at least `HIGH`

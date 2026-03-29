@@ -67,6 +67,7 @@ Use this skill when the main question is not implementation detail, but **how mu
 - the operator wants fewer unnecessary confirmations without giving up meaningful safety boundaries
 - the task includes file mutation, service control, plugin changes, outbound delivery, privileged execution, cross-instance action, or paid API usage
 - the operator needs local single-instance maintenance to stay practical without letting shared/runtime-sensitive work slip through
+- the request is already obviously dangerous but still missing details, so the system must stop in a risk lane before gathering missing information
 
 ## When Not To Use
 
@@ -76,6 +77,7 @@ Do not use this skill as the primary workflow for:
 - architecture consulting unrelated to execution governance
 
 If the main problem is unresolved intent or assumption overload, hand off to `clarify-first` first.
+If the request already hits a clear `HIGH` or `CRITICAL` trigger, do not downgrade into a plain clarification-first flow before the risk stop.
 
 ## OpenClaw-Specific Governance Rule
 
@@ -185,6 +187,7 @@ Require second confirmation that explicitly covers:
 Do not continue until the user confirms.
 Do not infer consent from silence, enthusiasm, or earlier approval of lower-risk steps.
 Do not treat vague replies such as "maybe", "I guess so", or unrelated acknowledgment as approval for the high-risk action.
+If key fields are missing but the request already hits a clear `HIGH` trigger, stop as `HIGH`, list the missing fields, and require them before execution.
 
 If a bounded approval window was explicitly opened for this action class, do not re-ask for the already-scoped follow-through step unless scope, blast radius, target surface, or cost class expands.
 
@@ -201,6 +204,7 @@ Require itemized confirmation that explicitly covers:
 Do not collapse multiple critical actions into one approval.
 Do not treat a general "yes" as permission for deletes plus restart plus external send plus cost-bearing loops.
 Do not treat a prior approval window as permission for `CRITICAL`.
+Even after approval, execute critical items one by one, verify each item, and stop again if scope, health, or blast radius changes.
 
 ## Confirmation Style
 
@@ -223,12 +227,17 @@ The default critical confirmation should feel like this:
 - state authorization granularity explicitly
 - reject bundled approval for unconfirmed follow-up actions
 
+When information is incomplete but the risk trigger is already obvious:
+- declare `HIGH` or `CRITICAL` first
+- list missing fields inside the confirmation block
+- require those fields before execution
+
 ## Required Skill Collaboration
 
 `watchdog-shrimp` is the governance router, not the only skill in the system.
 When the action falls into one of the following lanes, route deliberately:
 
-- unresolved ambiguity, missing files, or assumption overload -> call `clarify-first`
+- unresolved ambiguity, missing files, or assumption overload on non-explicit-high-risk work -> call `clarify-first`
 - core OpenClaw config mutation, instance health risk, or gateway-affecting change -> call the available health-protection / healthcheck skill before mutation
 - plugin installation or extension wiring with non-trivial permissions -> call the available safe installer or equivalent guarded install workflow
 - failed plugin/config change, gateway instability, or partial destructive state -> call the available fault-recovery / recovery workflow before continuing
@@ -239,6 +248,12 @@ If the ideal companion skill is unavailable, say that explicitly and keep the sa
 Do not invent companion skills or pretend an unavailable workflow already exists.
 Failed plugin install followed by manual manifest surgery is not a normal `HIGH` confirmation flow.
 The default behavior is stop-and-route-to-recovery.
+If a protection or recovery workflow is unavailable, the minimum fallback output must include:
+- changed object or intended object
+- current health / current blocked state
+- rollback candidate or backup status
+- blocked risky shortcut that will not be attempted
+- next safe diagnostic or recovery check
 
 ## Typical Examples
 

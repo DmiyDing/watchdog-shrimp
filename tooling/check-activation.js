@@ -6,6 +6,7 @@ const path = require("path");
 
 const args = process.argv.slice(2);
 const warnOnly = args.includes("--warn-only");
+const semanticMode = args.includes("--semantic");
 const targetArg = args.find((arg) => !arg.startsWith("--"));
 
 const root = path.resolve(__dirname, "..");
@@ -34,7 +35,9 @@ function extractSnippets(markdown) {
 
 function printStatus(status, message) {
   console.log(`activation-check: ${status}`);
-  console.log("source-of-truth: watchdog-shrimp/references/agents-snippet.md (exact match required)");
+  console.log(
+    `source-of-truth: watchdog-shrimp/references/agents-snippet.md (${semanticMode ? "semantic match allowed" : "exact match required"})`
+  );
   console.log(`snippet: ${snippetPath}`);
   console.log(`target: ${targetPath}`);
   console.log(`detail: ${message}`);
@@ -73,6 +76,29 @@ const matchesAnySnippet = snippets.some((s) => agentsContent.includes(s));
 
 if (matchesAnySnippet) {
   finish("ACTIVE", 0, "target contains a valid activation snippet (English or Chinese)");
+}
+
+function hasSemanticActivation(text) {
+  const requiredTokenGroups = [
+    ["watchdog-shrimp"],
+    ["low"],
+    ["medium"],
+    ["high"],
+    ["critical"],
+    ["clarify-first"],
+    ["installing the repository does not activate", "安装仓库不等于激活"],
+    ["approval window", "授权窗口"],
+    ["no merged authorization", "不接受合并授权"],
+  ];
+
+  const lowered = text.toLowerCase();
+  return requiredTokenGroups.every((group) =>
+    group.some((token) => lowered.includes(token.toLowerCase()))
+  );
+}
+
+if (semanticMode && hasSemanticActivation(agentsContent)) {
+  finish("ACTIVE_SEMANTIC", 0, "target contains semantically equivalent activation content");
 }
 
 // DRIFT: watchdog-shrimp content exists but doesn't match any known snippet.

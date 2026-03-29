@@ -106,6 +106,8 @@ Classification rules:
 - plugin install/remove plus config change plus restart is always `HIGH`
 - shared-router mutation, auth/token mutation, or cross-instance mutation is `CRITICAL`
 - if blast radius is unclear, classify as `HIGH` until scope is narrowed
+- if the request semantically includes plugin install + `plugins.entries` mutation + gateway restart, classify as at least `HIGH` even when plugin name, source, or version is incomplete
+- in that incomplete case, stop first in the `HIGH` lane and collect missing fields inside the confirmation block instead of routing first to ordinary clarification
 
 ## Recoverability Downgrade Rule
 
@@ -125,6 +127,10 @@ If any of those conditions fail, keep the safer class.
 - an explicit bounded approval window may cover same-class `MEDIUM` actions and already-scoped `HIGH` follow-through until verification completes
 - it never covers `CRITICAL`
 - it expires on scope expansion, target change, blast-radius change, failed verification, new external send, new delete, or new cost class
+
+Examples:
+- change a local listen port, restart the same local instance, and verify health -> the window may remain valid
+- move from local port tuning to token/router/plugin-permission mutation -> the window closes immediately
 
 ## Preference-Aware Friction Rules
 
@@ -158,6 +164,11 @@ External send to customers or other external users is usually `HIGH`.
 Broadcast, bulk touch, or effectively irreversible external send is `CRITICAL`.
 Treat abstract references such as `external delivery integrations` as escalation hints, not as a broader override of this outbound-send definition.
 
+Boundary table:
+- internal group / internal webhook / internal email -> `MEDIUM`
+- one external customer or one external tenant -> `HIGH`
+- customer blast, public channel, or broadcast -> `CRITICAL`
+
 ### Core configuration escalates
 
 Read-only checks stay `LOW`.
@@ -171,6 +182,11 @@ Single small-cost calls already authorized and clearly in-budget may remain `MED
 Unknown-cost or bounded batch spend is `HIGH`.
 High-cost loops, bulk backlog processing, or unattended recurring spend is `CRITICAL`.
 
+Budget table:
+- already approved, one-off, low-cost call -> `MEDIUM`
+- unknown cost or bounded batch cost -> `HIGH`
+- loops, backlog clearing, or cross-instance high-cost processing -> `CRITICAL`
+
 ### Restart risk depends on blast radius
 
 Single-instance local restart with health check and rollback-ready context may remain `MEDIUM`.
@@ -182,3 +198,8 @@ Restart combined with shared routing, external impact, or critical bundled actio
 Deleting temporary test files or caches with obvious local blast radius may be `MEDIUM`.
 Deleting ordinary workspace files is `HIGH`.
 Deleting shared config, user data, or bulk directories is `CRITICAL`.
+
+Delete table:
+- `tmp/`, `cache/`, explicit test artifacts -> `MEDIUM`
+- ordinary workspace files -> `HIGH`
+- backups, shared config, user data, or bulk directories -> `CRITICAL`
