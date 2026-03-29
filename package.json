@@ -14,8 +14,10 @@
     "validate:workspace-sync": "node tooling/check-workspace-sync.js --warn-only",
     "validate:workspace-sync:strict": "node tooling/check-workspace-sync.js",
     "validate:live": "node tooling/live-openclaw-check.js --mode safe",
+    "validate:live:smoke": "node tooling/live-openclaw-check.js --mode safe",
     "validate:live:safe": "node tooling/live-openclaw-check.js --mode safe",
     "validate:live:mutating": "node tooling/live-openclaw-check.js --mode mutating",
+    "validate:live:governance": "node tooling/live-openclaw-check.js --mode strict-governance",
     "validate:live:strict-governance": "node tooling/live-openclaw-check.js --mode strict-governance",
     "validate:ci:live": "node tooling/live-openclaw-check.js --mode safe"
   },

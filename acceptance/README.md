@@ -29,3 +29,5 @@ Current baseline expectation:
 - `HIGH`, `CRITICAL`, and incomplete-high-risk should be judged mainly through the `strict-governance` lane artifacts
 - `activation:strict` should pass before calling the environment fully activated
 - `safe` lane should not break instance reachability or mutate auth/token surfaces
+- `workspace-sync` should be `SYNCED` before claiming the active environment matches the repo
+- `safe` lane should run through all cases without timing out on the second case
