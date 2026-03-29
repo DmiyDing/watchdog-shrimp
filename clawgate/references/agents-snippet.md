@@ -11,10 +11,11 @@ Installation alone does not activate `clawgate`.
 - Default to `clawgate` for OpenClaw execution-governance decisions.
 - Route unresolved ambiguity to `clarify-first`; route config/health incidents to health protection or recovery workflows before improvising risky fixes.
 - `LOW`: execute directly, verify the result, then report.
-- `MEDIUM`: execute directly, verify the result, then report.
-- `HIGH`: stop before execution and require explicit confirmation of intent, scope, impact, consequence, and continue/cancel.
-- `CRITICAL`: stop before execution, enumerate each critical action item, and require itemized approval with no merged authorization.
+- `MEDIUM`: execute directly, verify the result, then report with `Action` -> `Verify` -> `Result`.
+- `HIGH`: stop before execution, state `Risk: HIGH`, and require one blocked confirmation that includes scope, impact, possible consequence, missing fields when relevant, and continue/cancel.
+- `CRITICAL`: stop before execution, state `Risk: CRITICAL`, enumerate each critical action item, and require itemized approval with no merged authorization.
 - If a request clearly hits `HIGH` or `CRITICAL`, reply must surface the risk level and blocked confirmation fields before ordinary clarification.
+- Composite delete + router / outbound / shared-state changes must not ask for ordinary confirmation only; they require itemized authorization.
 
 Treat the following as OpenClaw-sensitive and escalate aggressively:
 - `~/.openclaw/openclaw.json`
@@ -36,8 +37,9 @@ OpenClaw-specific escalation:
 - reading OpenClaw config or gateway state without mutation may stay `LOW`
 - ordinary local dependency install may stay `MEDIUM`
 - single-instance local maintenance with backup + validation + rollback and no auth/router/plugin-permission mutation may stay `MEDIUM`
-- plugin install/remove/update plus config mutation plus gateway/shared-service restart is always `HIGH`
+- plugin install/remove/update + config mutation + gateway/shared-service restart is always blocked `HIGH`
 - shared router mutation, auth/token wiring, bulk delete, or broadcast external send is `CRITICAL`
+- if shared data deletion + shared router mutation + everyone scope + cross-instance impact hits any two or more signals, force `CRITICAL`
 
 Authorization window rule:
 - an explicit bounded approval window may cover same-class `MEDIUM` and already-scoped `HIGH` follow-through until verification completes
@@ -63,10 +65,11 @@ Activation rule:
 - 默认使用 `clawgate` 进行 OpenClaw 执行治理决策。
 - 需求不清时优先转 `clarify-first`；配置/健康类故障优先转 health protection 或 recovery，而不是临时乱修。
 - `LOW`：直接执行，验证结果，然后报告。
-- `MEDIUM`：直接执行，验证结果，然后报告。
-- `HIGH`：执行前暂停，要求显式确认意图、范围、影响、后果，以及继续或取消。
-- `CRITICAL`：执行前暂停，逐项列出关键动作，并要求逐项授权，不接受合并授权。
+- `MEDIUM`：直接执行，按 `Action` -> `Verify` -> `Result` 报告。
+- `HIGH`：执行前暂停，必须先输出 `Risk: HIGH`，并在同一个阻断确认块里要求范围、影响、可能后果、缺失字段以及继续或取消。
+- `CRITICAL`：执行前暂停，必须先输出 `Risk: CRITICAL`，逐项列出关键动作，并要求逐项授权，不接受合并授权。
 - 如果请求已经明显命中 `HIGH` 或 `CRITICAL`，回复必须先给出风险等级和阻断字段，不能先退回普通澄清。
+- 复合删除 + 路由 / 外发 / 共享状态变更，不得仅要求普通确认，必须逐项授权。
 
 以下内容视为 OpenClaw 敏感项，需激进升级：
 - `~/.openclaw/openclaw.json`
@@ -88,8 +91,9 @@ OpenClaw 特定升级规则：
 - 只读 OpenClaw 配置或 gateway 状态不变更可保持 `LOW`
 - 普通本地依赖安装可保持 `MEDIUM`
 - 单实例本地维护，且具备备份、验证、回滚、且不触及 auth/router/plugin-permission 时，可保持 `MEDIUM`
-- 插件安装/移除/更新 + 配置变更 + gateway/共享服务重启始终为 `HIGH`
+- 插件安装/移除/更新 + 配置变更 + gateway/共享服务重启始终为阻断 `HIGH`
 - 共享路由变更、auth/token 接线、批量删除、外部广播外发始终为 `CRITICAL`
+- 如果共享数据删除、共享路由变更、全员范围、跨实例影响命中任意两项以上，强制 `CRITICAL`
 
 授权窗口规则：
 - 用户显式打开的有限授权窗口，可覆盖同类 `MEDIUM` 和已明确范围的 `HIGH` 后续步骤，直到验证结束

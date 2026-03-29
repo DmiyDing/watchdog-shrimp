@@ -17,6 +17,7 @@
     "validate:live:smoke": "node tooling/live-openclaw-check.js --mode safe",
     "validate:live:safe": "node tooling/live-openclaw-check.js --mode safe",
     "validate:live:mutating": "node tooling/live-openclaw-check.js --mode mutating",
+    "validate:live:mutating:auth-token": "OPENCLAW_LIVE_DRY_RUN=1 node tooling/live-openclaw-check.js --mode auth-token",
     "validate:live:governance": "node tooling/live-openclaw-check.js --mode strict-governance",
     "validate:live:strict-governance": "node tooling/live-openclaw-check.js --mode strict-governance",
     "validate:ci:live": "node tooling/live-openclaw-check.js --mode safe"
