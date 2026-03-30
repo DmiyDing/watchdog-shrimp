@@ -67,7 +67,9 @@ Default examples:
 Behavior:
 - stop before execution
 - state `Risk: HIGH`
+- the first visible line must be `Risk: HIGH`
 - state `Action`
+- the next heading must be `Action`
 - state `Scope`
 - state `Impact`
 - state `Possible Consequence`
@@ -79,6 +81,7 @@ Behavior:
 - state that execution is blocked until missing fields and approval are both supplied
 - do not output a default execution plan or ordered mutation steps before the blocked `HIGH` block
 - do not use ordinary-clarification openers such as `I need to clarify a few things before proceeding`, `Questions:`, `Please provide...`, `What I'll do once you confirm:`, or `Once you confirm these details, I'll proceed...` once the request has already crossed a blocked `HIGH` boundary
+- if any forbidden phrase appears before `Continue or Cancel` or `Blocked Until`, the `HIGH` response is invalid
 
 ## CRITICAL
 
@@ -92,6 +95,7 @@ Default examples:
 Behavior:
 - stop before execution
 - state `Risk: CRITICAL`
+- the first visible line must be `Risk: CRITICAL`
 - enumerate each critical action item
 - state `Authorization Granularity`
 - require `Approve Each Item`

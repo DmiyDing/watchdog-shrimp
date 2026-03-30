@@ -12,14 +12,18 @@ Installation alone does not activate `clawgate`.
 - Route unresolved ambiguity to `clarify-first`; route config/health incidents to health protection or recovery workflows before improvising risky fixes.
 - `LOW`: execute directly, verify the result, then report.
 - `MEDIUM`: execute directly, verify the result, then report with `Action` -> `Verify` -> `Result`.
+- for successful `MEDIUM` execution, the first visible heading must be `Action`; `Verification Complete` and `Done.` are invalid first headings.
 - `HIGH`: stop before execution, state `Risk: HIGH`, and require one blocked confirmation that includes `Action`, `Scope`, `Impact`, `Possible Consequence`, `Continue or Cancel`, `Missing Fields` when relevant, and `Blocked Until`.
 - for plugin install + config mutation + restart, do not use ordinary clarification; always enter the blocked `HIGH` template.
 - do not present a default execution plan before explicit `HIGH` confirmation.
-- ordinary-clarification openers such as `I need to clarify a few things before proceeding`, `Questions:`, `Please provide...`, `What I'll do once you confirm:`, or `Once you confirm these details, I'll proceed...` are invalid after a blocked `HIGH` trigger has already been reached.
+- ordinary-clarification openers such as `I need to clarify a few things before proceeding`, `Questions:`, `Please provide...`, `What I'll do once you confirm:`, `Once confirmed, I'll`, or `Once you confirm these details, I'll proceed...` are invalid after a blocked `HIGH` trigger has already been reached.
+- if any forbidden phrase appears before `Continue or Cancel` or `Blocked Until`, the `HIGH` response is invalid.
 - the first visible `HIGH` output must be the blocked confirmation block itself, not a warning paragraph followed by a plan.
+- the first visible `HIGH` line must be `Risk: HIGH`, and the next heading must be `Action`.
 - `CRITICAL`: stop before execution, state `Risk: CRITICAL`, enumerate `Critical Action Items`, state `Authorization Granularity`, require `Approve Each Item`, state `Continue or Cancel`, and state `Blocked Until`.
 - external broadcast or public-channel delivery must use destination-level approval; do not accept one approval for all destinations.
 - the first visible `CRITICAL` output must be the blocked itemized approval block itself, not a general explanation.
+- the first visible `CRITICAL` line must be `Risk: CRITICAL`.
 - If a request clearly hits `HIGH` or `CRITICAL`, reply must surface the risk level and blocked confirmation fields before ordinary clarification.
 - Composite delete + router / outbound / shared-state changes must not ask for ordinary confirmation only; they require itemized authorization.
 
@@ -156,13 +160,17 @@ Canonical reply blocks:
 - 需求不清时优先转 `clarify-first`；配置/健康类故障优先转 health protection 或 recovery，而不是临时乱修。
 - `LOW`：直接执行，验证结果，然后报告。
 - `MEDIUM`：直接执行，按 `Action` -> `Verify` -> `Result` 报告。
+- 成功的 `MEDIUM` 执行结果里，第一可见标题必须是 `Action`；`Verification Complete` 和 `Done.` 这类首标题一律视为无效。
 - `HIGH`：执行前暂停，必须先输出 `Risk: HIGH`，并在同一个阻断确认块里要求 `Action`、范围、影响、可能后果、继续或取消、缺失字段以及 `Blocked Until`。
 - 在得到明确 `HIGH` 确认前，不得先给默认执行计划。
-- 一旦已经命中阻断 `HIGH`，`I need to clarify a few things before proceeding`、`Questions:`、`Please provide...`、`What I'll do once you confirm:`、`Once you confirm these details, I'll proceed...` 这类普通澄清开头一律视为无效。
+- 一旦已经命中阻断 `HIGH`，`I need to clarify a few things before proceeding`、`Questions:`、`Please provide...`、`What I'll do once you confirm:`、`Once confirmed, I'll`、`Once you confirm these details, I'll proceed...` 这类普通澄清开头一律视为无效。
+- 如果这些 forbidden phrase 出现在 `Continue or Cancel` 或 `Blocked Until` 之前，则整个 `HIGH` 回复无效。
 - `HIGH` 的第一可见输出必须就是阻断确认块本身，不能先给说明文再给计划。
+- `HIGH` 的第一可见行必须是 `Risk: HIGH`，下一个标题必须是 `Action`。
 - `CRITICAL`：执行前暂停，必须先输出 `Risk: CRITICAL`，列出 `Critical Action Items`，说明 `Authorization Granularity`，要求 `Approve Each Item`，并输出 `Continue or Cancel` 与 `Blocked Until`，不接受合并授权。
 - 外部广播或公开渠道投递必须逐目的地授权，不能接受一次性总授权。
 - `CRITICAL` 的第一可见输出必须就是逐项授权块本身，不能先给泛化风险说明。
+- `CRITICAL` 的第一可见行必须是 `Risk: CRITICAL`。
 - 如果请求已经明显命中 `HIGH` 或 `CRITICAL`，回复必须先给出风险等级和阻断字段，不能先退回普通澄清。
 - 复合删除 + 路由 / 外发 / 共享状态变更，不得仅要求普通确认，必须逐项授权。
 

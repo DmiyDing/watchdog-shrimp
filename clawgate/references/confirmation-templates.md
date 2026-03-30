@@ -35,6 +35,8 @@ Stable execution report:
 - `Action`
 - `Verify`
 - `Result`
+- the first visible heading must be `Action`
+- `Verification Complete` and `Done.` are invalid first headings
 
 Optional machine-readable fields when requested:
 - `risk_level: MEDIUM`
@@ -59,17 +61,21 @@ Use a blocked confirmation with this fixed field order:
 - `Scope`
 - `Impact`
 - `Possible Consequence`
-- `Continue or Cancel`
 - `Missing Fields`
+- `Continue or Cancel`
 - `Blocked Until`
 
 Rules:
 - Start by explicitly stating `Risk: HIGH`.
+- For `HIGH`-risk requests, the first visible output must be exactly this block shape.
+- The first visible line must be `Risk: HIGH`.
+- The next heading must be `Action`.
 - Do not use ordinary clarification instead of this template for plugin install + config mutation + restart.
 - If any information is missing, keep the missing-fields prompt inside the blocked confirmation block.
 - Do not degrade into ordinary Q&A or clarification-first style questioning.
 - Do not output a default execution plan, ordered implementation steps, or fallback actions before explicit confirmation.
 - Ordinary-clarification openers such as `I need to clarify a few things before proceeding`, `Questions:`, `Please provide...`, `What I'll do once you confirm:`, and `Once you confirm these details, I'll proceed...` are invalid once the request has already crossed a blocked `HIGH` boundary.
+- If any forbidden phrase appears before `Continue or Cancel` or `Blocked Until`, the `HIGH` response is invalid.
 - State authorization granularity explicitly: this approval covers this exact high-risk action only.
 - State `Continue or Cancel` explicitly.
 
@@ -191,6 +197,8 @@ Use a blocked itemized confirmation with this fixed field order:
 
 Rules:
 - Always start by explicitly stating `Risk: CRITICAL`.
+- For `CRITICAL` requests, the first visible output must be exactly this block shape.
+- The first visible line must be `Risk: CRITICAL`.
 - Never merge approvals for multiple critical items.
 - Use `Approve Each Item` and require a separate approval or cancellation for every numbered item.
 - For broadcast or public-channel work, list each audience or destination separately.

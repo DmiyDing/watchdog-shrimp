@@ -188,6 +188,8 @@ Use the fixed execution report shape:
 - Result
 
 Do not collapse this to `Done.` or an unstructured summary.
+The first visible heading must be `Action`.
+`Verification Complete` and `Done.` are invalid first headings for successful `MEDIUM` execution.
 
 ### HIGH
 
@@ -202,10 +204,14 @@ The `HIGH` reply must follow this protocol:
 - if information is missing, also output `Blocked Until`
 
 The first visible block must be this blocked confirmation block.
+For `HIGH`-risk requests, the first visible output must be exactly this block shape.
+The first visible line must be `Risk: HIGH`.
+The first heading after that line must be `Action`.
 Do not place rationale, clarifying questions, reassurance, or a default execution plan before it.
 Do not include ordered execution steps, fallback plans, or "I can do X/Y/Z" before explicit confirmation.
 Do not use ordinary-clarification openers such as `I need to clarify a few things before proceeding`, `Questions:`, `Please provide...`, `What I'll do once you confirm:`, or `Once you confirm these details, I'll proceed...`.
 Those patterns are invalid for `HIGH` once the request has already crossed a blocked `HIGH` boundary.
+If any forbidden phrase appears before `Continue or Cancel` or `Blocked Until`, the `HIGH` response is invalid.
 
 Do not continue until the user confirms.
 Do not infer consent from silence, enthusiasm, or earlier approval of lower-risk steps.
@@ -251,6 +257,8 @@ The `CRITICAL` reply must follow this protocol:
 - if outbound delivery is involved, also output destination-level audience and channel fields
 
 The first visible block must be this blocked itemized confirmation block.
+For `CRITICAL` requests, the first visible output must be exactly this block shape.
+The first visible line must be `Risk: CRITICAL`.
 Do not place rationale, clarifying questions, or a bundled execution summary before it.
 Do not replace itemized approval with a general warning paragraph.
 

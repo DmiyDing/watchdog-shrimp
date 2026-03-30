@@ -198,6 +198,14 @@ function checkAgentsSnippet(content) {
     return false;
   }
 
+  const missingHighForbidden = ["i need to clarify a few things before proceeding", "once confirmed, i'll"].filter(
+    (token) => !snippetLower.includes(token)
+  );
+  if (missingHighForbidden.length > 0) {
+    fail(`agents-snippet.md HIGH forbidden-output guard missing tokens: ${missingHighForbidden.join(", ")}`);
+    return false;
+  }
+
   pass("agents-snippet.md HIGH fields OK");
   return true;
 }
@@ -259,6 +267,13 @@ function checkMediumCoverage(skillContent, agentsContent, templatesContent, risk
       fail(`SKILL.md MEDIUM execution report missing fields: ${missing.join(", ")}`);
       ok = false;
     }
+  }
+
+  const mediumGuardTokens = ["first visible heading must be `action`", "`verification complete`", "`done.`"];
+  const missingMediumGuards = mediumGuardTokens.filter((token) => !skillContent.toLowerCase().includes(token));
+  if (missingMediumGuards.length > 0) {
+    fail(`SKILL.md MEDIUM guardrails missing tokens: ${missingMediumGuards.join(", ")}`);
+    ok = false;
   }
 
   const agentsMediumLine = agentsContent.match(/`MEDIUM`:[^\n]*/);
