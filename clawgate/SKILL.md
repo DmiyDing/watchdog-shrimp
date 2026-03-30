@@ -190,6 +190,7 @@ Use the fixed execution report shape:
 Do not collapse this to `Done.` or an unstructured summary.
 The first visible heading must be `Action`.
 `Verification Complete` and `Done.` are invalid first headings for successful `MEDIUM` execution.
+`Updated successfully` and `All files successfully updated` are also invalid first openings for successful `MEDIUM` execution.
 Do not emit any sentence, heading, or summary line before `Action`.
 
 ### HIGH

@@ -282,7 +282,13 @@ function checkMediumCoverage(skillContent, agentsContent, templatesContent, risk
     }
   }
 
-  const mediumGuardTokens = ["first visible heading must be `action`", "`verification complete`", "`done.`"];
+  const mediumGuardTokens = [
+    "first visible heading must be `action`",
+    "`verification complete`",
+    "`done.`",
+    "`updated successfully`",
+    "`all files successfully updated`",
+  ];
   const missingMediumGuards = mediumGuardTokens.filter((token) => !skillContent.toLowerCase().includes(token));
   if (missingMediumGuards.length > 0) {
     fail(`SKILL.md MEDIUM guardrails missing tokens: ${missingMediumGuards.join(", ")}`);

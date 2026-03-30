@@ -12,7 +12,7 @@ Installation alone does not activate `clawgate`.
 - Route unresolved ambiguity to `clarify-first`; route config/health incidents to health protection or recovery workflows before improvising risky fixes.
 - `LOW`: execute directly, verify the result, then report.
 - `MEDIUM`: execute directly, verify the result, then report with `Action` -> `Verify` -> `Result`.
-- for successful `MEDIUM` execution, the first visible heading must be `Action`; `Verification Complete` and `Done.` are invalid first headings.
+- for successful `MEDIUM` execution, the first visible heading must be `Action`; `Verification Complete`, `Done.`, `Updated successfully`, and `All files successfully updated` are invalid first openings.
 - do not emit any sentence, heading, or summary line before `Action` for successful `MEDIUM` execution.
 - `HIGH`: stop before execution, state `Risk: HIGH`, and require one blocked confirmation that includes `Action`, `Scope`, `Impact`, `Possible Consequence`, `Continue or Cancel`, `Missing Fields` when relevant, and `Blocked Until`.
 - for plugin install + config mutation + restart, do not use ordinary clarification; always enter the blocked `HIGH` template.
@@ -164,7 +164,7 @@ Canonical reply blocks:
 - 需求不清时优先转 `clarify-first`；配置/健康类故障优先转 health protection 或 recovery，而不是临时乱修。
 - `LOW`：直接执行，验证结果，然后报告。
 - `MEDIUM`：直接执行，按 `Action` -> `Verify` -> `Result` 报告。
-- 成功的 `MEDIUM` 执行结果里，第一可见标题必须是 `Action`；`Verification Complete` 和 `Done.` 这类首标题一律视为无效。
+- 成功的 `MEDIUM` 执行结果里，第一可见标题必须是 `Action`；`Verification Complete`、`Done.`、`Updated successfully`、`All files successfully updated` 这类首开头一律视为无效。
 - 成功的 `MEDIUM` 执行结果里，`Action` 之前不得再出现任何句子、标题或总结行。
 - `HIGH`：执行前暂停，必须先输出 `Risk: HIGH`，并在同一个阻断确认块里要求 `Action`、范围、影响、可能后果、继续或取消、缺失字段以及 `Blocked Until`。
 - 在得到明确 `HIGH` 确认前，不得先给默认执行计划。
