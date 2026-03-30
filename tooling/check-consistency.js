@@ -129,6 +129,38 @@ function checkSkillExecutionStrategy(content) {
   return true;
 }
 
+function checkSkillCanonicalBlocks(content) {
+  const requiredSections = [
+    "## Canonical Reply Blocks",
+    "### MEDIUM Result Block",
+    "### HIGH Plugin Install Block",
+    "### Incomplete HIGH Plugin Install Block",
+    "### CRITICAL Shared Delete + Router Block",
+    "### CRITICAL External Broadcast Block",
+  ];
+
+  const missingSections = requiredSections.filter((section) => !content.includes(section));
+  if (missingSections.length > 0) {
+    fail(`SKILL.md canonical blocks missing sections: ${missingSections.join(", ")}`);
+    return false;
+  }
+
+  const missingTokens = [
+    "Possible Consequence: a bad install, config mutation, or restart can leave the instance unhealthy",
+    "Blocked Until: the exact missing information is provided and the exact action receives explicit continue/cancel confirmation",
+    "Authorization Granularity: approve each item separately; do not merge authorization across items",
+    "Approve Each Destination: reply destination-by-destination with approve or cancel",
+  ].filter((token) => !content.includes(token));
+
+  if (missingTokens.length > 0) {
+    fail(`SKILL.md canonical blocks missing tokens: ${missingTokens.join(" | ")}`);
+    return false;
+  }
+
+  pass("SKILL.md canonical reply blocks OK");
+  return true;
+}
+
 // Check 3: agents-snippet.md HIGH line
 function checkAgentsSnippet(content) {
   const snippets = extractMarkdownSnippets(content);
@@ -392,6 +424,7 @@ const riskMatrixContent = readFile(files.riskMatrix);
 if (skillContent) {
   if (!checkSkillCorePolicy(skillContent)) allPassed = false;
   if (!checkSkillExecutionStrategy(skillContent)) allPassed = false;
+  if (!checkSkillCanonicalBlocks(skillContent)) allPassed = false;
 }
 
 if (agentsContent) {

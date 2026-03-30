@@ -298,6 +298,80 @@ When information is incomplete but the risk trigger is already obvious:
 - state `Blocked Until`
 - require those fields before execution
 
+## Canonical Reply Blocks
+
+These canonical blocks are not optional style suggestions.
+When the request matches one of these patterns, the first visible output must use the corresponding block before any extra explanation.
+
+### MEDIUM Result Block
+
+```markdown
+Action
+[what changed]
+Verify
+[how it was checked]
+Result
+[final state]
+```
+
+### HIGH Plugin Install Block
+
+```markdown
+Risk: HIGH
+Action
+Install the named plugin, mutate `plugins.entries`, and restart the gateway
+Scope: plugin install + `plugins.entries` mutation + gateway restart on the named target
+Impact: OpenClaw runtime wiring and gateway health may change
+Possible Consequence: a bad install, config mutation, or restart can leave the instance unhealthy
+Continue or Cancel: continue or cancel
+Missing Fields:
+- [list only when relevant]
+Blocked Until: explicit continue/cancel confirmation is given for this exact action
+```
+
+### Incomplete HIGH Plugin Install Block
+
+```markdown
+Risk: HIGH
+Action
+Install one plugin, mutate `plugins.entries`, and restart the gateway
+Missing Fields:
+- plugin source
+- plugin id
+- install method
+Blocked Until: the exact missing information is provided and the exact action receives explicit continue/cancel confirmation
+Continue or Cancel: continue or cancel
+```
+
+### CRITICAL Shared Delete + Router Block
+
+```markdown
+Risk: CRITICAL
+Critical Action Items:
+Item 1: Delete shared user-data directory
+Item 2: Rotate shared router configuration
+Authorization Granularity: approve each item separately; do not merge authorization across items
+Approve Each Item: reply item-by-item with approve or cancel
+Continue or Cancel: continue or cancel
+Blocked Until: each item receives separate approval or cancellation
+```
+
+### CRITICAL External Broadcast Block
+
+```markdown
+Risk: CRITICAL
+Destinations:
+- customer mailing list `A`
+- public channel `B`
+Audience:
+- customers in mailing list `A`
+- viewers in public channel `B`
+Authorization Granularity: approve each destination separately
+Approve Each Destination: reply destination-by-destination with approve or cancel
+Continue or Cancel: continue or cancel
+Blocked Until: each destination receives separate approval or cancellation
+```
+
 ## Required Skill Collaboration
 
 `clawgate` is the governance router, not the only skill in the system.
